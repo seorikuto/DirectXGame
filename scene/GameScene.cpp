@@ -11,6 +11,12 @@ void GameScene::Initialize() {
 	dxCommon_ = DirectXCommon::GetInstance();
 	input_ = Input::GetInstance();
 	audio_ = Audio::GetInstance();
+	textureHandle_ = TextureManager::Load("Block.png");
+	sprite_ = Sprite::Create(TextureManager::Load("Block.png"), {300, 300});
+	model_ = Model::Create();
+	delete sprite_;
+	delete model_;
+
 }
 
 void GameScene::Update() {}
@@ -26,6 +32,9 @@ void GameScene::Draw() {
 
 	/// <summary>
 	/// ここに背景スプライトの描画処理を追加できる
+	
+
+
 	/// </summary>
 
 	// スプライト描画後処理

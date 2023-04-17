@@ -155,6 +155,9 @@
     <ClInclude Include="2d\ImGuiManager.h">
       <Filter>ヘッダー ファイル\2d</Filter>
     </ClInclude>
+    <ClInclude Include="player.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Resources\shaders\SpritePS.hlsl">
