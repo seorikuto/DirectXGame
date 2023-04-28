@@ -4,7 +4,10 @@
 
 GameScene::GameScene() {}
 
-GameScene::~GameScene() {}
+GameScene::~GameScene() {
+	delete model_;
+	///////////////////////////////////////////////////delete player_;
+}
 
 void GameScene::Initialize() {
 
@@ -14,12 +17,21 @@ void GameScene::Initialize() {
 
 	//ファイル指定してテクスチャを読み込む
 	textureHandle_ = TextureManager::Load("sample.png");
-
 	//モデル生成
 	model_ = Model::Create();
+	//ビュープロジェクションの初期化
+	viewProjection_.Initialize();
+	//自キャラ生成
+	/////////////////////////////////////////////////////////////player_ = new Player();
+	//自キャラの初期化
+	///////////////////////////////////////////////player_->Initialize(model_, textureHandle_);
+
 }
 
-void GameScene::Update() {}
+void GameScene::Update() {
+	//自キャラの更新
+	/////////////////////////////////////////////////////////////player_->Update();
+}
 
 void GameScene::Draw() {
 
@@ -46,6 +58,7 @@ void GameScene::Draw() {
 
 	/// <summary>
 	/// ここに3Dオブジェクトの描画処理を追加できる
+	////////////////////////////////////////////////////////////////////////player_->Draw();
 	/// </summary>
 
 	// 3Dオブジェクト描画後処理

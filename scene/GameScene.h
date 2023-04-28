@@ -8,6 +8,7 @@
 #include "Sprite.h"
 #include "ViewProjection.h"
 #include "WorldTransform.h"
+#include "Player.h"
 
 /// <summary>
 /// ゲームシーン
@@ -55,5 +56,9 @@ private: // メンバ変数
 	//モデル
 	Model* model_ = nullptr;
 
+	//ビュープロジェクション
+	ViewProjection viewProjection_;
 
+	//自キャラ
+	////////////////////////////////////////////Player* player_ = nullptr;
 };
