@@ -10,7 +10,7 @@
 
 GameScene::GameScene() {}
 
-GameScene::~GameScene() {}
+GameScene::~GameScene() { delete model_; }
 
 void GameScene::Initialize() {
 
@@ -30,7 +30,7 @@ void GameScene::Initialize() {
 	worldTransform_.Initialize();
 	//ビュープロジェクションの初期化
 	viewProjection_.Initialize();	
-	//delete model_;
+	
 
 	//サウンドデータの読み込み
 	soundDataHandle_ = audio_->LoadWave("fanfare.wav");
