@@ -4,22 +4,37 @@
 
 GameScene::GameScene() {}
 
-GameScene::~GameScene() {}
+GameScene::~GameScene() {
+	delete model_;
+	//delete player_;
+}
 
 void GameScene::Initialize() {
+
+	// ファイル名を指定してテクスチャを読み込む
+	textureHandle_ = TextureManager::Load("sample.png");
+	// モデル生成
+	model_ = Model::Create();
+	// ビュープロジェクションの初期化
+	viewProjection_.Initialize();
+	//worldTransform_.Initialize();
+	// 自キャラ生成
+	//player_ = new Player();
+	// 自キャラ初期化
+	//player_->Intialize(model_, textureHandle_);
+
+
+
 
 	dxCommon_ = DirectXCommon::GetInstance();
 	input_ = Input::GetInstance();
 	audio_ = Audio::GetInstance();
-	textureHandle_ = TextureManager::Load("Block.png");
-	sprite_ = Sprite::Create(TextureManager::Load("Block.png"), {300, 300});
-	model_ = Model::Create();
-	delete sprite_;
-	delete model_;
-
 }
 
-void GameScene::Update() {}
+void GameScene::Update() {
+	//自キャラの更新
+	//player_->Update();
+}
 
 void GameScene::Draw() {
 
@@ -49,6 +64,8 @@ void GameScene::Draw() {
 
 	/// <summary>
 	/// ここに3Dオブジェクトの描画処理を追加できる
+	//自キャラ描画
+	player_->Draw(viewProjection_);
 	/// </summary>
 
 	// 3Dオブジェクト描画後処理
@@ -68,3 +85,4 @@ void GameScene::Draw() {
 
 #pragma endregion
 }
+
