@@ -5,15 +5,18 @@
 #include "ViewProjection.h"
 #include "WorldTransform.h"
 
+
 class Player {
 
 private:
+	//ワールド変換データ
 	WorldTransform worldTransform_;
 
-
+	//モデルデータ
 	Model* model_ = nullptr;
-
+	//テクスチャ
 	uint32_t textureHandle_ = 0u;
+	//キーボード入力
 	Input* input_ = nullptr;
 
 public:
