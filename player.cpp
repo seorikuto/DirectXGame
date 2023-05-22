@@ -40,6 +40,7 @@ void Player::Update() {
 		move.y -= kCharacterSpeed;
 	}
 
+
 	worldTransform_.translation_.x += move.x;
 	worldTransform_.translation_.y += move.y;
 	worldTransform_.translation_.z += move.z;
@@ -63,6 +64,23 @@ void Player::Update() {
 	ImGui::SliderFloat("playerZ", &worldTransform_.translation_.z, -20.0f, 20.0f);
 	ImGui::End();
 }
+
+
+void Player::Rotate() {
+	//回転速さ[ラジアン/flame]
+	const float kRotSpeed = 0.02f;
+	// 押した方向で移動ベクトルを変更
+	if (input_->PushKey(DIK_A)) {
+		worldTransform_.rotation_.y -= kRotSpeed;
+
+	} else if (input_->PushKey(DIK_D)) {
+		worldTransform_.rotation_.y += kRotSpeed;
+	}
+}
+
+
+
+
 
 void Player::Draw(ViewProjection& viewProjection) {
 	model_->Draw(worldTransform_, viewProjection, textureHandle_);
