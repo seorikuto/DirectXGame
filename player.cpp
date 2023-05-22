@@ -17,8 +17,7 @@ void Player::Initialize(Model* model, uint32_t textureHandle) {
 void Player::Update() { 
 	worldTransform_.TransferMatrix();
 	
-	ImGui::Begin("player");
-	ImGui::End();
+
 
 	  Vector3 move = {0, 0, 0};
 
@@ -35,10 +34,10 @@ void Player::Update() {
 		move.x += kCharacterSpeed;
 	}
 	if (input_->PushKey(DIK_UP)) {
-		move.z += kCharacterSpeed;
+		move.y += kCharacterSpeed;
 
 	} else if (input_->PushKey(DIK_DOWN)) {
-		move.z -= kCharacterSpeed;
+		move.y -= kCharacterSpeed;
 	}
 
 	worldTransform_.translation_.x += move.x;
@@ -49,16 +48,20 @@ void Player::Update() {
 	worldTransform_.matWorld_ = MakeAffineMatrix(
 	    worldTransform_.scale_, worldTransform_.rotation_, worldTransform_.translation_);
 
-	const float kMoveLimitX = 10.0f;
-	const float kMoveLimitY = 10.0f;
+	const float kMoveLimitX = 35.0f;
+	const float kMoveLimitY = 18.0f;
 
 	worldTransform_.translation_.x = max(worldTransform_.translation_.x, -kMoveLimitX);
 	worldTransform_.translation_.x = min(worldTransform_.translation_.x, +kMoveLimitX);
 	worldTransform_.translation_.y = max(worldTransform_.translation_.y, -kMoveLimitY);
 	worldTransform_.translation_.y = min(worldTransform_.translation_.y, +kMoveLimitY);
 
-	// 行列転送
-	//worldTransform_.TransferMatrix();
+
+	ImGui::Begin("player");
+	ImGui::SliderFloat("playerX", &worldTransform_.translation_.x, -35.0f, 35.0f);
+	ImGui::SliderFloat("playerY", &worldTransform_.translation_.y, -18.0f, 18.0f);
+	ImGui::SliderFloat("playerZ", &worldTransform_.translation_.z, -20.0f, 20.0f);
+	ImGui::End();
 }
 
 void Player::Draw(ViewProjection& viewProjection) {

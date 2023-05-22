@@ -64,7 +64,7 @@ private: // メンバ変数
 	Player* player = nullptr;
 
 	//デバッグカメラ有効
-	bool isDebugCameraActive_ = 0;
+	bool isDebugCameraActive_ = false;
 	//デバッグカメラ
 	DebugCamera* debugCamera_ = nullptr;
 };
