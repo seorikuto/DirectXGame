@@ -7,13 +7,15 @@
 void Player::Attack() {
 		// 弾を生成し、初期化
 	if (input_->TriggerKey(DIK_X)) {
-	
-		/*if (bullet_) {
-			delete bullet_;
-			bullet_ = nullptr;
-		}*/
+		//弾の速度
+		const float kBulletSpeed = 1.0f;
+		Vector3 velocity(0, 0, kBulletSpeed);
+		//速度ベクトルを自機の向きに合わせて回転
+		velocity = TransformNormal(velocity, worldTransform_.matWorld_);
+
+		//弾の生成、初期化
 		PlayerBullet* newBullet = new PlayerBullet();
-		newBullet->Initialize(model_, worldTransform_.translation_);
+		newBullet->Initialize(model_, worldTransform_.translation_,velocity);
 
 		// 弾を登録する
 		bullets_.push_back(newBullet);
@@ -37,7 +39,14 @@ void Player::Initialize(Model* model, uint32_t textureHandle) {
 void Player::Update() { 
 	worldTransform_.UpdateMatrix();
 	
-	
+	//デスフラグの立った弾を処理
+	bullets_.remove_if([](PlayerBullet* bullet) {
+		if (bullet->IsDead()) {
+			delete bullet;
+			return true;
+		}
+		return false;
+	});
 
 
 	  Vector3 move = {0, 0, 0};
