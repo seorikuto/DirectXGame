@@ -4,6 +4,24 @@
 #include "ImGuiManager.h"
 #include "Matrix4x4.h"
 
+void Player::Attack() {
+		// 弾を生成し、初期化
+	if (input_->TriggerKey(DIK_X)) {
+	
+		PlayerBullet* newBullet = new PlayerBullet();
+		newBullet->Initialize(model_, worldTransform_.translation_);
+
+		// 弾を登録する
+		bullet_ = newBullet;
+	}
+	if (input_->TriggerKey(DIK_Z)) {
+		bullet_ = nullptr;
+	}
+}
+
+
+
+
 void Player::Initialize(Model* model, uint32_t textureHandle) {
 	// nullポインタチェック
 	assert(model);
@@ -15,7 +33,8 @@ void Player::Initialize(Model* model, uint32_t textureHandle) {
 }
 
 void Player::Update() { 
-	worldTransform_.TransferMatrix();
+	worldTransform_.UpdateMatrix();
+	
 	
 
 
@@ -38,6 +57,13 @@ void Player::Update() {
 
 	} else if (input_->PushKey(DIK_DOWN)) {
 		move.y -= kCharacterSpeed;
+	}
+	
+	//攻撃処理
+	Attack();
+
+	if (bullet_) {
+		bullet_->Update();
 	}
 
 
@@ -80,8 +106,10 @@ void Player::Rotate() {
 
 
 
-
-
 void Player::Draw(ViewProjection& viewProjection) {
 	model_->Draw(worldTransform_, viewProjection, textureHandle_);
+	//弾描画
+	if (bullet_) {
+		bullet_->Draw(viewProjection);
+	}
 }

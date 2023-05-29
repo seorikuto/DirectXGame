@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "Matrix4x4.h"
 #include "Vector3.h"
@@ -45,4 +45,6 @@ struct WorldTransform {
 	/// 行列を転送する
 	/// </summary>
 	void TransferMatrix();
+
+	void UpdateMatrix();
 };
