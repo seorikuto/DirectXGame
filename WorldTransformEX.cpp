@@ -8,5 +8,3 @@ void WorldTransform::UpdateMatrix() {
 	TransferMatrix();
 }
 
-////定数バッファに転送する
-//WorldTransform 

@@ -5,6 +5,7 @@
 #include "ViewProjection.h"
 #include "WorldTransform.h"
 #include "PlayerBullet.h"
+#include <list>
 
 class Player {
 public:
@@ -15,6 +16,10 @@ public:
 	void Rotate();
 	//攻撃
 	void Attack();
+/// <summary>
+/// デストラクタ
+/// </summary>
+	~Player();
 
 private:
 	WorldTransform worldTransform_;
@@ -24,7 +29,9 @@ private:
 
 	uint32_t textureHandle_ = 0u;
 	// 弾
-	PlayerBullet* bullet_ = nullptr;
+
+	std::list<PlayerBullet*> bullets_;
+	//キーボード入力
 	Input* input_ = nullptr;
 
 };
