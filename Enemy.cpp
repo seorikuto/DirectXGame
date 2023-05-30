@@ -15,7 +15,11 @@ void Enemy::Initialize(Model*model, const Vector3& position) {
 
 void Enemy::Update() { 
 	worldTransform_.UpdateMatrix(); 
-	worldTransform_.translation_.z -= 1.0f;
+	// 時間経過で出現
+	if (--enemyTimer_ <= 0) {
+		worldTransform_.translation_.z -= 1.0f;
+	}
+
 }
 
 void Enemy::Draw(ViewProjection& viewProjection) { 

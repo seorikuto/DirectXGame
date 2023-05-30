@@ -16,4 +16,9 @@ private:
 	Model* model_ = nullptr;
 
 	uint32_t textureHandleEnemy_ = 0u;
+
+	// 出現<frm>
+	static const int32_t kRespornTime = 60 * 10;
+	// 敵出現タイマー
+	int32_t enemyTimer_ = kRespornTime;
 };
