@@ -11,6 +11,7 @@
 #include "WorldTransform.h"
 #include "player.h"
 #include "DebugCamera.h"
+#include "Enemy.h"
 
 /// <summary>
 /// ゲームシーン
@@ -60,8 +61,10 @@ private: // メンバ変数
 	uint32_t textureHandle = 0;
 	// モデル
 	Model* model = nullptr;
-
+	//プレイヤー
 	Player* player = nullptr;
+	//エネミー
+	Enemy* enemy = nullptr;
 
 	//デバッグカメラ有効
 	bool isDebugCameraActive_ = false;

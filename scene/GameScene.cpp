@@ -10,6 +10,7 @@ GameScene::~GameScene() {
 	delete model;
 	delete player;
 	delete debugCamera_;
+	delete enemy;
 }
 
 void GameScene::Initialize() {
@@ -21,13 +22,16 @@ void GameScene::Initialize() {
 	// 自キャラの初期化
 	textureHandle = TextureManager::Load("sample.png");
 
+	//敵キャラの生成
+	enemy = new Enemy();
+
 	// 読み込み
 	// モデル生成
 	model = Model::Create();
 	player->Initialize(model, textureHandle);
-
-
-
+	enemy->Initialize(model, worldTransform_.translation_);
+	
+	
 
 
 
@@ -48,6 +52,8 @@ void GameScene::Update() {
 	// 自キャラの更新
 	player->Update();
 	player->Rotate();
+
+	enemy->Update();
 
 	//デバッグカメラの更新
 	debugCamera_->Update();
@@ -100,7 +106,7 @@ void GameScene::Draw() {
 	/// </summary>
 	// 自キャラの描画
 	player->Draw(viewProjection_);
-	
+	enemy->Draw(viewProjection_);
 
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();
