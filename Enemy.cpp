@@ -31,13 +31,7 @@ void Enemy::Update() {
 		worldTransform_.translation_.x += 0.5f;
 	}
 
-
-
 	worldTransform_.UpdateMatrix(); 
-	// 時間経過で出現
-	//if (--enemyTimer_ <= 0) {
-	//	//worldTransform_.translation_.z -= 1.0f;
-	//}
 
 }
 
