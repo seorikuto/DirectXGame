@@ -2,6 +2,7 @@
 #include "TextureManager.h"
 #include <cassert>
 #include "AxisIndicator.h"
+#include "ImGuiManager.h"
 
 
 GameScene::GameScene() {}
@@ -75,6 +76,11 @@ void GameScene::Update() {
 	} else {
 		viewProjection_.UpdateMatrix();
 	}
+
+	//デバッグテキストの表示
+	/*ImGui::Begin("enemyTimer");
+	ImGui::Text("enemy %d",);
+	ImGui::End();*/
 }
 
 

@@ -1,5 +1,6 @@
 #include "Enemy.h"
 #include <cassert>
+#include "ImGuiManager.h"
 
 
 void Enemy::Initialize(Model*model, const Vector3& position) {
@@ -11,30 +12,108 @@ void Enemy::Initialize(Model*model, const Vector3& position) {
 
 	//初期座標
 	worldTransform_.translation_ = position;
+	// 接近フェーズ初期化
+	InitializePhase();
 }
 
 void Enemy::Update() { 
 	switch (phase_) { 
 	case Phase::Approach:
 	default:
-		//移動（ベクトル加算）
-		if (--enemyTimer_ <= 0) {
-			worldTransform_.translation_.z -= 0.5f;
-		}
-		//規定の位置に到着したら離脱
-		if (worldTransform_.translation_.z < -30.0f) {
-			phase_ = Phase::Leave;
-		}
+		ApproachUpdate();
 		break;
 	case Phase::Leave:
-		//移動（ベクトルを加算）
-		worldTransform_.translation_.x += 0.5f;
+		LeaveUpdate();
+		break;
 	}
 
 	worldTransform_.UpdateMatrix(); 
 
+	// デスフラグの立った弾を処理
+	enemyBullets_.remove_if([](EnemyBullet* enemyBullet) {
+		if (enemyBullet->IsEnemyDead()) {
+			delete enemyBullet;
+			return true;
+		}
+		return false;
+	});
+
+
+
+	for (EnemyBullet* enemyBullet : enemyBullets_) {
+		enemyBullet->Update();
+	}
+
+
+	ImGui::Begin("enemy");
+	ImGui::InputInt("firetimer", &fireTimer);
+	ImGui::InputInt("enemytimer", &enemyTimer_);
+	ImGui::End();
 }
 
 void Enemy::Draw(ViewProjection& viewProjection) { 
 	model_->Draw(worldTransform_, viewProjection, textureHandleEnemy_);
+
+	//弾描画
+	for (EnemyBullet* enemyBullet : enemyBullets_) {
+		enemyBullet->Draw(viewProjection);
+	}
+
+}
+
+void Enemy::Fire() {
+	// 弾を生成し、初期化
+	if (enemyTimer_ <= 0) {
+		// 弾の速度
+		const float kEnemyBulletSpeed = -1.0f;
+		Vector3 velocity(0, 0, kEnemyBulletSpeed);
+		// 速度ベクトルを自機の向きに合わせて回転
+		velocity = TransformNormal(velocity, worldTransform_.matWorld_);
+
+		// 弾の生成、初期化
+		EnemyBullet* newBullet = new EnemyBullet();
+		newBullet->Initialize(model_, worldTransform_.translation_, velocity);
+
+		// 弾を登録する
+		enemyBullets_.push_back(newBullet);
+	}
+}
+
+Enemy::~Enemy() {
+	    // 敵bulletの開放
+	    for (EnemyBullet* enemyBullet : enemyBullets_) {
+		    delete enemyBullet;
+	    }
+}
+
+void Enemy::InitializePhase() {
+	    // 発射タイマーを初期化
+		    fireTimer = kFireInterval;
+}
+
+
+void Enemy::ApproachUpdate() {
+	    // 移動（ベクトル加算）
+	    if (--enemyTimer_ <= 0) {
+		 worldTransform_.translation_.z -= 0.05f;
+	    }
+	    // 規定の位置に到着したら離脱
+	    if (worldTransform_.translation_.z < -30.0f) {
+		 phase_ = Phase::Leave;
+	    }
+
+		// 発射タイマーカウントダウン
+	    fireTimer--;
+	    // 指定時間に達した
+	    if (fireTimer <= 0) {
+	    //弾発射
+	    Fire();
+	    // 発射タイマーを初期化
+	    fireTimer = kFireInterval;
+	    }
+}
+
+void Enemy::LeaveUpdate() {
+	    // 移動（ベクトルを加算）
+	    worldTransform_.translation_.x += 0.1f;
 }
