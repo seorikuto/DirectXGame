@@ -1,6 +1,7 @@
 #include "Enemy.h"
 #include <cassert>
 #include "ImGuiManager.h"
+#include "player.h"
 
 
 void Enemy::Initialize(Model*model, const Vector3& position) {
@@ -62,12 +63,39 @@ void Enemy::Draw(ViewProjection& viewProjection) {
 }
 
 void Enemy::Fire() {
+	assert(player_);
+	// 弾の速度
+	const float kEnemyBulletSpeed = 1.0f;
+
+	//自キャラのワールド座標を取得する
+	Vector3 b = player_->GetWorldPosition();
+	//player_->GetWorldPosition();
+	//敵キャラのワールド座標を取得する
+	Vector3 a = GetWorldPosition();
+	//GetWorldPosition();
+	//敵キャラ→自キャラの差分ベクトルを求める
+	//player_->GetWorldPosition() = GetWorldPosition();
+	Vector3 c = {};
+	c.x = b.x - a.x;
+	c.y = b.y - a.y;
+	c.z = b.z - a.z;
+	//ベクトルの正規化
+	//Vector3 TransformNormal(const Vector3& v, const Matrix4x4& m);
+	float length = sqrtf(c.x * c.x + c.y * c.y + c.z * c.z);
+	Vector3 dir = {c.x / length, c.y / length, c.z / length};
+	 
+	//ベクトルの長さを、早さに合わせる
+	Vector3 velocity(kEnemyBulletSpeed * dir.x, kEnemyBulletSpeed * dir.y, kEnemyBulletSpeed * dir.z);
+
+	
+
+
 	// 弾を生成し、初期化
 	if (enemyTimer_ <= 0) {
-		// 弾の速度
-		const float kEnemyBulletSpeed = -1.0f;
-		Vector3 velocity(0, 0, kEnemyBulletSpeed);
+		
+		//Vector3 velocity(0, 0, kEnemyBulletSpeed);
 		// 速度ベクトルを自機の向きに合わせて回転
+		
 		velocity = TransformNormal(velocity, worldTransform_.matWorld_);
 
 		// 弾の生成、初期化
@@ -117,3 +145,15 @@ void Enemy::LeaveUpdate() {
 	    // 移動（ベクトルを加算）
 	    worldTransform_.translation_.x += 0.1f;
 }
+
+Vector3 Enemy::GetWorldPosition() {
+	    // ワールド座標を入れる変数
+	    Vector3 worldPos;
+	    // ワールド行列の平行移動成分を取得（ワールド座標）
+	    worldPos.x = worldTransform_.translation_.x;
+	    worldPos.y = worldTransform_.translation_.y;
+	    worldPos.z = worldTransform_.translation_.z;
+
+		return worldPos;
+}
+	    

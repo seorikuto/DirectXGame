@@ -16,10 +16,14 @@ public:
 	void Rotate();
 	//攻撃
 	void Attack();
-/// <summary>
+
+	    /// <summary>
 /// デストラクタ
 /// </summary>
 	~Player();
+
+	//ワールド座標を取得
+	Vector3 GetWorldPosition();
 
 private:
 	WorldTransform worldTransform_;

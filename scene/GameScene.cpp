@@ -33,7 +33,8 @@ void GameScene::Initialize() {
 	enemy->Initialize(model, worldTransform_.translation_);
 	
 	
-
+	//敵キャラに自キャラのアドレスを渡す
+	enemy->SetPlayer(player);
 
 
 

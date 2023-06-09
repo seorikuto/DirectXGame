@@ -5,6 +5,9 @@
 #include "Matrix4x4.h"
 #include <list>
 
+//自機クラスの前方宣言
+class Player;
+
 ///<summary>
 ///敵
 ///</summary>
@@ -33,6 +36,14 @@ public:
 	//接近フェーズ初期化
 	void InitializePhase();
 
+	//setter
+	void SetPlayer(Player* player) { player_ = player; }
+	//ワールド座標を取得
+	Vector3 GetWorldPosition();
+
+	int speed = 3.0f;
+
+
 private:
 	WorldTransform worldTransform_;
 
@@ -50,5 +61,8 @@ private:
 	std::list<EnemyBullet*> enemyBullets_;
 	//発射タイマー
 	int fireTimer = 0;
+
+	//自キャラ
+	Player* player_ = nullptr;
 	
 };
