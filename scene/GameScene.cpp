@@ -78,10 +78,7 @@ void GameScene::Update() {
 		viewProjection_.UpdateMatrix();
 	}
 
-	//デバッグテキストの表示
-	/*ImGui::Begin("enemyTimer");
-	ImGui::Text("enemy %d",);
-	ImGui::End();*/
+
 }
 
 

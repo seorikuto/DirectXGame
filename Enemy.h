@@ -41,7 +41,7 @@ public:
 	//ワールド座標を取得
 	Vector3 GetWorldPosition();
 
-	int speed = 3.0f;
+
 
 
 private:

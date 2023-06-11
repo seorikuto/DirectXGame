@@ -13,6 +13,9 @@ void Enemy::Initialize(Model*model, const Vector3& position) {
 
 	//初期座標
 	worldTransform_.translation_ = position;
+	worldTransform_.translation_.x = 20.0f;
+	worldTransform_.translation_.y = 0.0f;
+	worldTransform_.translation_.z = 20.0f;
 	// 接近フェーズ初期化
 	InitializePhase();
 }
@@ -49,6 +52,9 @@ void Enemy::Update() {
 	ImGui::Begin("enemy");
 	ImGui::InputInt("firetimer", &fireTimer);
 	ImGui::InputInt("enemytimer", &enemyTimer_);
+	ImGui::SliderFloat("enemyX", &worldTransform_.translation_.x, -80, 80);
+	ImGui::SliderFloat("enemyY", &worldTransform_.translation_.y, -30, 30);
+	ImGui::SliderFloat("enemyZ", &worldTransform_.translation_.z, -80, 80);
 	ImGui::End();
 }
 
@@ -69,18 +75,14 @@ void Enemy::Fire() {
 
 	//自キャラのワールド座標を取得する
 	Vector3 b = player_->GetWorldPosition();
-	//player_->GetWorldPosition();
 	//敵キャラのワールド座標を取得する
 	Vector3 a = GetWorldPosition();
-	//GetWorldPosition();
 	//敵キャラ→自キャラの差分ベクトルを求める
-	//player_->GetWorldPosition() = GetWorldPosition();
 	Vector3 c = {};
 	c.x = b.x - a.x;
 	c.y = b.y - a.y;
 	c.z = b.z - a.z;
 	//ベクトルの正規化
-	//Vector3 TransformNormal(const Vector3& v, const Matrix4x4& m);
 	float length = sqrtf(c.x * c.x + c.y * c.y + c.z * c.z);
 	Vector3 dir = {c.x / length, c.y / length, c.z / length};
 	 
@@ -126,7 +128,7 @@ void Enemy::ApproachUpdate() {
 		 worldTransform_.translation_.z -= 0.05f;
 	    }
 	    // 規定の位置に到着したら離脱
-	    if (worldTransform_.translation_.z < -30.0f) {
+	    if (worldTransform_.translation_.z < -10.0f) {
 		 phase_ = Phase::Leave;
 	    }
 
@@ -147,13 +149,12 @@ void Enemy::LeaveUpdate() {
 }
 
 Vector3 Enemy::GetWorldPosition() {
-	    // ワールド座標を入れる変数
-	    Vector3 worldPos;
-	    // ワールド行列の平行移動成分を取得（ワールド座標）
-	    worldPos.x = worldTransform_.translation_.x;
-	    worldPos.y = worldTransform_.translation_.y;
-	    worldPos.z = worldTransform_.translation_.z;
-
-		return worldPos;
+	// ワールド座標を入れる変数
+	Vector3 worldPos;
+	// ワールド行列の平行移動成分を取得（ワールド座標）
+	worldPos.x = worldTransform_.translation_.x;
+	worldPos.y = worldTransform_.translation_.y;
+	worldPos.z = worldTransform_.translation_.z;
+	return worldPos;
 }
 	    
