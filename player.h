@@ -17,13 +17,18 @@ public:
 	//攻撃
 	void Attack();
 
-	    /// <summary>
-/// デストラクタ
-/// </summary>
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
 	~Player();
 
 	//ワールド座標を取得
 	Vector3 GetWorldPosition();
+
+	//衝突を検出したら呼び出されるコールバック関数
+	void OnCollision();
+	// 弾リストを取得
+	const std::list<PlayerBullet*>& GetBullet() { return bullets_; }
 
 private:
 	WorldTransform worldTransform_;
@@ -33,7 +38,6 @@ private:
 
 	uint32_t textureHandle_ = 0u;
 	// 弾
-
 	std::list<PlayerBullet*> bullets_;
 	//キーボード入力
 	Input* input_ = nullptr;

@@ -91,6 +91,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		imguiManager->Draw();
 		// 描画終了
 		dxCommon->PostDraw();
+
+		//ゲームシーン取得関数
+		gameScene->CheckAllCollisions();
 	}
 
 	// 各種解放

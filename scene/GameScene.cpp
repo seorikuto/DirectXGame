@@ -1,9 +1,8 @@
 #include "GameScene.h"
-#include "TextureManager.h"
-#include <cassert>
 #include "AxisIndicator.h"
 #include "ImGuiManager.h"
-
+#include "TextureManager.h"
+#include <cassert>
 
 GameScene::GameScene() {}
 
@@ -23,7 +22,7 @@ void GameScene::Initialize() {
 	// 自キャラの初期化
 	textureHandle = TextureManager::Load("sample.png");
 
-	//敵キャラの生成
+	// 敵キャラの生成
 	enemy = new Enemy();
 
 	// 読み込み
@@ -31,18 +30,15 @@ void GameScene::Initialize() {
 	model = Model::Create();
 	player->Initialize(model, textureHandle);
 	enemy->Initialize(model, worldTransform_.translation_);
-	
-	
-	//敵キャラに自キャラのアドレスを渡す
+
+	// 敵キャラに自キャラのアドレスを渡す
 	enemy->SetPlayer(player);
 
-
-
-	//軸方向表示の表示を有効にする
+	// 軸方向表示の表示を有効にする
 	AxisIndicator::GetInstance()->SetVisible(1);
-	//軸方向表示が参照するビュープロジェクションを指定する（アドレス渡し）
+	// 軸方向表示が参照するビュープロジェクションを指定する（アドレス渡し）
 	AxisIndicator::GetInstance()->SetTargetViewProjection(&viewProjection_);
-	//デバッグカメラの生成
+	// デバッグカメラの生成
 	debugCamera_ = new DebugCamera(1280, 720);
 
 	dxCommon = DirectXCommon::GetInstance();
@@ -57,7 +53,7 @@ void GameScene::Update() {
 
 	enemy->Update();
 
-	//デバッグカメラの更新
+	// デバッグカメラの更新
 	debugCamera_->Update();
 #ifdef _DEBUG
 	if (input->TriggerKey(DIK_SPACE)) {
@@ -66,7 +62,7 @@ void GameScene::Update() {
 		} else {
 			isDebugCameraActive_ = true;
 		}
-	} 
+	}
 #endif // DEBUG
 
 	if (isDebugCameraActive_) {
@@ -77,10 +73,7 @@ void GameScene::Update() {
 	} else {
 		viewProjection_.UpdateMatrix();
 	}
-
-
 }
-
 
 void GameScene::Draw() {
 
@@ -126,6 +119,87 @@ void GameScene::Draw() {
 
 	// スプライト描画後処理
 	Sprite::PostDraw();
+
+#pragma endregion
+}
+
+void GameScene::CheckAllCollisions() {
+	// 判定対象AとB
+	Vector3 posA, posB;
+	// 弾リストの取得
+	const std::list<PlayerBullet*>& bullets = player->GetBullet();
+	// 敵弾リストの取得
+	const std::list<EnemyBullet*>& enemyBullets = enemy->GetEnemyBullets();
+
+
+#pragma region 自キャラと敵弾の当たり判定
+	// 自キャラの座標
+	posA = player->GetWorldPosition();
+	// 自キャラと敵弾全ての当たり判定
+	for (EnemyBullet* enemyBullet : enemyBullets) {
+		// 敵弾の座標
+		posB = enemyBullet->GetWorldPosition();
+		float r1 = 1.0f;
+		float r2 = 1.0f;
+		float distancae = (r1 + r2) * (r1 + r2);
+		//  球と球の交差判定
+		if (distancae > 
+			(posB.x - posA.x) * (posB.x - posA.x) +
+		    (posB.y - posA.y) * (posB.y - posA.y) +
+		    (posB.z - posA.z) * (posB.z - posA.z)) {
+			// 自キャラの衝突時コールバックを呼び出す
+			player->OnCollision();
+			// 敵弾の衝突時コールバックを呼び出す
+			enemyBullet->OnCollision();
+		}
+	}
+#pragma endregion
+
+
+#pragma region 自弾と敵キャラの当たり判定
+	// 敵キャラの座標
+	posA = enemy->GetWorldPosition();
+	// 敵キャラと自弾全ての当たり判定
+	for (PlayerBullet* bullet : bullets) {
+		// 弾の座標
+		posB = bullet->GetWorldPosition();
+		float r1 = 1.0f;
+		float r2 = 1.0f;
+		 float distancae = (r1 + r2) * (r1 + r2);
+		//  球と球の交差判定
+		if (distancae > 
+			(posB.x - posA.x) * (posB.x - posA.x) +
+		    (posB.y - posA.y) * (posB.y - posA.y) +
+		    (posB.z - posA.z) * (posB.z - posA.z)) {
+			// 敵キャラの衝突時コールバックを呼び出す
+			enemy->OnCollision();
+			// 敵弾の衝突時コールバックを呼び出す
+			bullet->OnCollision();
+		}
+	}
+#pragma endregion
+	 
+#pragma region 自弾と敵弾の当たり判定
+	//自弾と敵弾全ての当たり判定
+	for (PlayerBullet* bullet : bullets) {
+		for (EnemyBullet* enemyBullet : enemyBullets) {
+			posA = bullet->GetWorldPosition();
+			posB = enemyBullet->GetWorldPosition();
+			float r1 = 1.0f;
+			float r2 = 1.0f;
+			float distancae = (r1 + r2) * (r1 + r2);
+			//  球と球の交差判定
+			if (distancae > 
+				(posB.x - posA.x) * (posB.x - posA.x) +
+			    (posB.y - posA.y) * (posB.y - posA.y) +
+			    (posB.z - posA.z) * (posB.z - posA.z)) {
+				// 敵キャラの衝突時コールバックを呼び出す
+				bullet->OnCollision();
+				// 敵弾の衝突時コールバックを呼び出す
+				enemyBullet->OnCollision();
+			}
+		}
+	}
 
 #pragma endregion
 }

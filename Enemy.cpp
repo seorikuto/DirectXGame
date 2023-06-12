@@ -15,7 +15,7 @@ void Enemy::Initialize(Model*model, const Vector3& position) {
 	worldTransform_.translation_ = position;
 	worldTransform_.translation_.x = 20.0f;
 	worldTransform_.translation_.y = 0.0f;
-	worldTransform_.translation_.z = 20.0f;
+	worldTransform_.translation_.z = 30.0f;
 	// 接近フェーズ初期化
 	InitializePhase();
 }
@@ -89,8 +89,6 @@ void Enemy::Fire() {
 	//ベクトルの長さを、早さに合わせる
 	Vector3 velocity(kEnemyBulletSpeed * dir.x, kEnemyBulletSpeed * dir.y, kEnemyBulletSpeed * dir.z);
 
-	
-
 
 	// 弾を生成し、初期化
 	if (enemyTimer_ <= 0) {
@@ -146,6 +144,10 @@ void Enemy::ApproachUpdate() {
 void Enemy::LeaveUpdate() {
 	    // 移動（ベクトルを加算）
 	    worldTransform_.translation_.x += 0.1f;
+}
+
+void Enemy::OnCollision() {
+
 }
 
 Vector3 Enemy::GetWorldPosition() {
