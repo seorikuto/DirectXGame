@@ -19,6 +19,7 @@ public:
 	// ワールド座標を取得
 	Vector3 GetWorldPosition();
 
+
 private:
 	WorldTransform worldTransform_;
 

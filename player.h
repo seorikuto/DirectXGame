@@ -9,13 +9,15 @@
 
 class Player {
 public:
-	void Initialize(Model* model, uint32_t textureHandle);
+	void Initialize(Model* model, uint32_t textureHandle, const Vector3& trans);
 	void Update();
 	void Draw(ViewProjection& viewProjection);
 	//旋回
 	void Rotate();
 	//攻撃
 	void Attack();
+
+	
 
 	/// <summary>
 	/// デストラクタ
@@ -29,6 +31,8 @@ public:
 	void OnCollision();
 	// 弾リストを取得
 	const std::list<PlayerBullet*>& GetBullet() { return bullets_; }
+
+	void SetParent(const WorldTransform* parent);
 
 private:
 	WorldTransform worldTransform_;

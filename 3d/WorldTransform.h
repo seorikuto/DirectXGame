@@ -47,4 +47,8 @@ struct WorldTransform {
 	void TransferMatrix();
 
 	void UpdateMatrix();
+
 };
+
+
+
