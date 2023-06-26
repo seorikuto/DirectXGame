@@ -8,6 +8,9 @@
 //自機クラスの前方宣言
 class Player;
 
+//GameSceneの前方宣言
+class GameScene;
+
 ///<summary>
 ///敵
 ///</summary>
@@ -43,8 +46,10 @@ public:
 
 	//衝突を検出したら呼び出されるコールバック関数
 	void OnCollision();
-	//弾リストを取得
-	const std::list<EnemyBullet*>& GetEnemyBullets() { return enemyBullets_; }
+	////弾リストを取得
+	//const std::list<EnemyBullet*>& GetEnemyBullets() { return enemyBullets_; }
+
+	void SetGameScene(GameScene* gameScene) { gameScene_ = gameScene; }
 
 private:
 	WorldTransform worldTransform_;
@@ -59,12 +64,15 @@ private:
 	int32_t enemyTimer_ = kRespornTime;
 	//フェーズ
 	Phase phase_ = phase_;
-	//リスト
-	std::list<EnemyBullet*> enemyBullets_;
+	////リスト
+	//std::list<EnemyBullet*> enemyBullets_;
 	//発射タイマー
 	int fireTimer = 0;
 
 	//自キャラ
 	Player* player_ = nullptr;
+
+	//ゲームシーン
+	GameScene* gameScene_ = nullptr;
 	
 };

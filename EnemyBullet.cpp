@@ -25,7 +25,6 @@ void EnemyBullet::Update() {
 	if (--enemyDeathTimer_ <= 0) {
 		isEnemyDead_ = true;
 	}
-
 }
 
 void EnemyBullet::Draw(const ViewProjection& viewProjection) {

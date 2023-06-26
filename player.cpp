@@ -87,7 +87,7 @@ void Player::Update() {
 	worldTransform_.matWorld_ = MakeAffineMatrix(
 	    worldTransform_.scale_, worldTransform_.rotation_, worldTransform_.translation_);
 
-// 親子関係
+	//親子関係
 	if (worldTransform_.parent_) {
 		worldTransform_.matWorld_ *= worldTransform_.parent_->matWorld_;
 	}

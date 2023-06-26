@@ -33,20 +33,20 @@ void Enemy::Update() {
 
 	worldTransform_.UpdateMatrix(); 
 
-	// デスフラグの立った弾を処理
-	enemyBullets_.remove_if([](EnemyBullet* enemyBullet) {
-		if (enemyBullet->IsEnemyDead()) {
-			delete enemyBullet;
-			return true;
-		}
-		return false;
-	});
+	////// デスフラグの立った弾を処理
+	//enemyBullets_.remove_if([](EnemyBullet* enemyBullet) {
+	//	if (enemyBullet->IsEnemyDead()) {
+	//		delete enemyBullet;
+	//		return true;
+	//	}
+	//	return false;
+	//});
 
 
 
-	for (EnemyBullet* enemyBullet : enemyBullets_) {
-		enemyBullet->Update();
-	}
+	//for (EnemyBullet* enemyBullet : enemyBullets_) {
+	//	enemyBullet->Update();
+	//}
 
 
 	ImGui::Begin("enemy");
@@ -61,10 +61,10 @@ void Enemy::Update() {
 void Enemy::Draw(ViewProjection& viewProjection) { 
 	model_->Draw(worldTransform_, viewProjection, textureHandleEnemy_);
 
-	//弾描画
-	for (EnemyBullet* enemyBullet : enemyBullets_) {
-		enemyBullet->Draw(viewProjection);
-	}
+	////弾描画
+	//for (EnemyBullet* enemyBullet : enemyBullets_) {
+	//	enemyBullet->Draw(viewProjection);
+	//}
 
 }
 
@@ -108,10 +108,10 @@ void Enemy::Fire() {
 }
 
 Enemy::~Enemy() {
-	    // 敵bulletの開放
-	    for (EnemyBullet* enemyBullet : enemyBullets_) {
-		    delete enemyBullet;
-	    }
+	    //// 敵bulletの開放
+	    //for (EnemyBullet* enemyBullet : enemyBullets_) {
+		   // delete enemyBullet;
+	    //}
 }
 
 void Enemy::InitializePhase() {
