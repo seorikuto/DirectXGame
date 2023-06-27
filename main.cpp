@@ -94,6 +94,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		//ゲームシーン取得関数
 		gameScene->CheckAllCollisions();
+
+		
 	}
 
 	// 各種解放

@@ -2,6 +2,7 @@
 #include <cassert>
 #include "ImGuiManager.h"
 #include "player.h"
+#include "GameScene.h"
 
 
 void Enemy::Initialize(Model*model, const Vector3& position) {
@@ -13,9 +14,10 @@ void Enemy::Initialize(Model*model, const Vector3& position) {
 
 	//初期座標
 	worldTransform_.translation_ = position;
-	worldTransform_.translation_.x = 20.0f;
+	/*worldTransform_.translation_.x = 20.0f;
 	worldTransform_.translation_.y = 0.0f;
-	worldTransform_.translation_.z = 30.0f;
+	worldTransform_.translation_.z = 80.0f;*/
+	
 	// 接近フェーズ初期化
 	InitializePhase();
 }
@@ -73,10 +75,10 @@ void Enemy::Fire() {
 	// 弾の速度
 	const float kEnemyBulletSpeed = 1.0f;
 
-	//自キャラのワールド座標を取得する
-	Vector3 b = player_->GetWorldPosition();
 	//敵キャラのワールド座標を取得する
 	Vector3 a = GetWorldPosition();
+	//自キャラのワールド座標を取得する
+	Vector3 b = player_->GetWorldPosition();
 	//敵キャラ→自キャラの差分ベクトルを求める
 	Vector3 c = {};
 	c.x = b.x - a.x;
@@ -100,18 +102,20 @@ void Enemy::Fire() {
 
 		// 弾の生成、初期化
 		EnemyBullet* newBullet = new EnemyBullet();
-		newBullet->Initialize(model_, worldTransform_.translation_, velocity);
+		
+		gameScene_->AddEnemyBullet(newBullet);
 
-		// 弾を登録する
-		enemyBullets_.push_back(newBullet);
+		newBullet->Initialize(model_, GetWorldPosition(), velocity);
+		//// 弾を登録する
+	//	//enemyBullets_.push_back(newBullet);
 	}
 }
 
 Enemy::~Enemy() {
-	    //// 敵bulletの開放
-	    //for (EnemyBullet* enemyBullet : enemyBullets_) {
-		   // delete enemyBullet;
-	    //}
+//	    //// 敵bulletの開放
+//	    //for (EnemyBullet* enemyBullet : enemyBullets_) {
+//		   // delete enemyBullet;
+//	    //}
 }
 
 void Enemy::InitializePhase() {
@@ -146,9 +150,7 @@ void Enemy::LeaveUpdate() {
 	    worldTransform_.translation_.x += 0.1f;
 }
 
-void Enemy::OnCollision() {
-
-}
+void Enemy::OnCollision() { isEneDead_ = true; }
 
 Vector3 Enemy::GetWorldPosition() {
 	// ワールド座標を入れる変数

@@ -16,11 +16,11 @@ void EnemyBullet::Initialize(Model* model, const Vector3& position, const Vector
 }
 
 void EnemyBullet::Update() {
-	worldTransform_.UpdateMatrix();
 	// 座標を移動させる
 	worldTransform_.translation_.x += velocity_.x;
 	worldTransform_.translation_.y += velocity_.y;
 	worldTransform_.translation_.z += velocity_.z;
+	worldTransform_.UpdateMatrix();
 
 	if (--enemyDeathTimer_ <= 0) {
 		isEnemyDead_ = true;

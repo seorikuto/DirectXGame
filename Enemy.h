@@ -51,15 +51,18 @@ public:
 
 	void SetGameScene(GameScene* gameScene) { gameScene_ = gameScene; }
 
+	bool IsEneDead() const { return isEneDead_; }
+
+	
+
+
 private:
 	WorldTransform worldTransform_;
-
 	Model* model_ = nullptr;
-
 	uint32_t textureHandleEnemy_ = 0u;
 
 	// 出現<frm>
-	static const int32_t kRespornTime = 60 * 10;
+	static const int32_t kRespornTime = 60 * 5;
 	// 敵出現タイマー
 	int32_t enemyTimer_ = kRespornTime;
 	//フェーズ
@@ -74,5 +77,10 @@ private:
 
 	//ゲームシーン
 	GameScene* gameScene_ = nullptr;
+
+	// フラグ
+	bool isEneDead_ = false;
 	
+	
+
 };
