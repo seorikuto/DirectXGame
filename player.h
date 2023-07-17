@@ -6,11 +6,12 @@
 #include "WorldTransform.h"
 #include "PlayerBullet.h"
 #include <list>
+#include "Sprite.h"
 
 class Player {
 public:
 	void Initialize(Model* model, uint32_t textureHandle, const Vector3& trans);
-	void Update();
+	void Update(ViewProjection& viewProjection);
 	void Draw(ViewProjection& viewProjection);
 	//旋回
 	void Rotate();
@@ -34,6 +35,9 @@ public:
 
 	void SetParent(const WorldTransform* parent);
 
+	//UI描画
+	void DrawUI();
+
 private:
 	WorldTransform worldTransform_;
 
@@ -46,4 +50,9 @@ private:
 	//キーボード入力
 	Input* input_ = nullptr;
 
+	//3Dレティクル用ワールドトランフォーム
+	WorldTransform worldTransform3DReticle_;
+
+	//2Dレティクル用スプライト
+	Sprite* sprite2DReticle_ = nullptr;
 };

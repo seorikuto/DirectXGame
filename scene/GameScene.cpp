@@ -30,6 +30,10 @@ void GameScene::Initialize() {
 
 	worldTransform_.Initialize();
 	viewProjection_.Initialize();
+
+	// レティクルのテクスチャ
+	TextureManager::Load("target.png");
+
 	// 自キャラの生成
 	player = new Player();
 	Vector3 playerPosition{0, 0, 50};
@@ -37,7 +41,7 @@ void GameScene::Initialize() {
 	textureHandle = TextureManager::Load("sample.png");
 
 	// 敵キャラの生成
-	// enemy = new Enemy();
+	//enemy = new Enemy();
 
 	// 天球生成
 	skydome_ = new Skydome();
@@ -78,6 +82,8 @@ void GameScene::Initialize() {
 	// デバッグカメラの生成
 	debugCamera_ = new DebugCamera(1280, 720);
 
+
+
 	dxCommon = DirectXCommon::GetInstance();
 	input = Input::GetInstance();
 	audio = Audio::GetInstance();
@@ -88,7 +94,7 @@ void GameScene::Initialize() {
 
 void GameScene::Update() {
 	// 自キャラの更新
-	player->Update();
+	player->Update(viewProjection_);
 	player->Rotate();
 
 
@@ -202,6 +208,9 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに前景スプライトの描画処理を追加できる
 	/// </summary>
+
+	player->DrawUI();
+
 
 	// スプライト描画後処理
 	Sprite::PostDraw();
