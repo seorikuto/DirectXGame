@@ -53,7 +53,7 @@ void GameScene::Initialize() {
 	// モデル生成
 	model = Model::Create();
 	//AddEnemy({worldTransform_.translation_.x, worldTransform_.translation_.y,worldTransform_.translation_.z});
-	AddEnemy({0.0f,3.0f,80.0f});
+	//AddEnemy({0.0f,3.0f,80.0f});
 	// player->Initialize(model, textureHandle);
 	// enemy->Initialize(model, worldTransform_.translation_);
 

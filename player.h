@@ -38,6 +38,9 @@ public:
 	//UI描画
 	void DrawUI();
 
+	//マウス
+	void Mouse(ViewProjection& viewProjection);
+
 private:
 	WorldTransform worldTransform_;
 
