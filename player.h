@@ -16,8 +16,9 @@ public:
 	//旋回
 	void Rotate();
 	//攻撃
-	void Attack();
+	void AAttack();
 
+	void SAttack();
 	
 
 	/// <summary>

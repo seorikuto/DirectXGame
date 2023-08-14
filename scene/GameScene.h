@@ -15,11 +15,22 @@
 #include "Skydome.h"
 #include "RailCamera.h"
 #include <sstream>
+#include "Title.h"
+
 
 /// <summary>
 /// ゲームシーン
 /// </summary>
 class GameScene {
+
+	//Scene
+	enum class Scene {
+		title,
+		operation,
+		play,
+		gameclear,
+		gameover,
+	};
 
 public: // メンバ関数
 	/// <summary>
@@ -71,7 +82,6 @@ public: // メンバ関数
 	const std::list<EnemyBullet*>& GetEnemyBullets() { return enemyBullets_; }
 
 	
-	
 
 private: // メンバ変数
 	DirectXCommon* dxCommon = nullptr;
@@ -119,4 +129,8 @@ private: // メンバ変数
 	//待機タイマー
 	int32_t waitTimer_ = 180;
 
+	//scene
+	Scene scene_ = scene_;
+	//title
+	Title* title_ = nullptr;
 };

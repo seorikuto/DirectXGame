@@ -74,7 +74,8 @@ void Player::Update(ViewProjection& viewProjection) {
 	}
 	
 	//攻撃処理
-	Attack();
+	AAttack();
+	SAttack();
 	for (PlayerBullet* bullet : bullets_) {
 		bullet->Update();
 	}
@@ -158,7 +159,6 @@ void Player::Update(ViewProjection& viewProjection) {
 	ImGui::End();
 }
 
-
 void Player::Rotate() {
 	//回転速さ[ラジアン/flame]
 	const float kRotSpeed = 0.02f;
@@ -171,8 +171,6 @@ void Player::Rotate() {
 	}
 }
 
-
-
 void Player::Draw(ViewProjection& viewProjection) {
 	model_->Draw(worldTransform_, viewProjection, textureHandle_);
 	// 3Dレティクル表示
@@ -184,7 +182,7 @@ void Player::Draw(ViewProjection& viewProjection) {
 
 }
 
-void Player::Attack() {
+void Player::AAttack() {
 	// 弾の速度
 	const float kBulletSpeed = 1.0f;
 	Vector3 velocity(0, 0, kBulletSpeed);
@@ -203,7 +201,7 @@ void Player::Attack() {
 	
 
 	// 弾を生成し、初期化
-	if (input_->TriggerKey(DIK_X)) {
+	if (input_->IsPressMouse(0)) {
 		// 弾の生成、初期化
 		PlayerBullet* newBullet = new PlayerBullet();
 		newBullet->Initialize(model_, GetWorldPosition(), velocity);
@@ -229,8 +227,48 @@ void Player::Attack() {
 
 }
 
+void Player::SAttack() {
+	// 弾の速度
+	const float kBulletSpeed = 1.0f;
+	Vector3 velocity(0, 0, kBulletSpeed);
+	// 速度ベクトルを自機の向きに合わせて回転
 
+	velocity = {
+	    worldTransform3DReticle_.translation_.x - worldTransform_.translation_.x,
+	    worldTransform3DReticle_.translation_.y - worldTransform_.translation_.y,
+	    worldTransform3DReticle_.translation_.z - worldTransform_.translation_.z,
+	};
+	velocity = {
+	    kBulletSpeed * Normalize(velocity).x, kBulletSpeed * Normalize(velocity).y,
+	    kBulletSpeed * Normalize(velocity).z};
 
+	velocity = TransformNormal(velocity, worldTransform_.matWorld_);
+
+	// 弾を生成し、初期化
+	if (input_->IsTriggerMouse(1)) {
+		// 弾の生成、初期化
+		PlayerBullet* newBullet = new PlayerBullet();
+		newBullet->Initialize(model_, GetWorldPosition(), velocity);
+
+		// 弾を登録する
+		bullets_.push_back(newBullet);
+	}
+
+	XINPUT_STATE joyState;
+	// ゲームパッド未接続なら何もせず抜ける
+	if (!Input::GetInstance()->GetJoystickState(0, joyState)) {
+		return;
+	}
+	// Rトリガーを押していたら
+	if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) {
+		// 弾の生成、初期化
+		PlayerBullet* newBullet = new PlayerBullet();
+		newBullet->Initialize(model_, GetWorldPosition(), velocity);
+
+		// 弾を登録する
+		bullets_.push_back(newBullet);
+	}
+}
 
 Player::~Player() {
 	//bulletの開放
@@ -254,7 +292,6 @@ Vector3 Player::GetWorldPosition() {
 
 	return worldPos;
 }
-
 
 void Player::SetParent(const WorldTransform* parent) { 
 	// 親子関係を結ぶ
