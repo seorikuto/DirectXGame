@@ -140,7 +140,10 @@ void GameScene::Update() {
 
 		railCamera_->Update();
 	break;
-
+	case Scene::gameclear:
+	break;
+	case Scene::gameover:
+	break;
 	}
 
 			// デバッグカメラの更新

@@ -17,6 +17,7 @@
 #include <sstream>
 #include "Title.h"
 #include "Operation.h"
+#include "Clear.h"
 
 /// <summary>
 /// ゲームシーン
@@ -135,4 +136,6 @@ private: // メンバ変数
 	Title* title_ = nullptr;
 	//operation
 	Operation* operation_ = nullptr;
+	//clear
+	Clear* clear_ = nullptr;
 };
