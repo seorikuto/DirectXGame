@@ -45,7 +45,6 @@ void Enemy::Update() {
 	//});
 
 
-
 	//for (EnemyBullet* enemyBullet : enemyBullets_) {
 	//	enemyBullet->Update();
 	//}

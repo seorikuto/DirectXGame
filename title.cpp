@@ -17,6 +17,5 @@ void Title::Update() {
 }
 
 void Title::Draw() {
-	ImGui::Begin("operation");
-	ImGui::End();
+	
 }

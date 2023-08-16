@@ -95,17 +95,19 @@ void GameScene::Initialize() {
 void GameScene::Update() {
 	switch (scene_) { 
 	case Scene::title:
-		if (input->PushKey(DIK_RETURN)) {
+		if (input->TriggerKey(DIK_RETURN)) {
 			scene_ = Scene::operation;
 		}
 		title_->Update();
+		title_->Draw();
 	break;
 	case Scene::operation:
-	if (input->PushKey(DIK_0)) {
+		if (input->PushKey(DIK_0)) {
 			scene_ = Scene::play;	
-	}
-	title_->Draw();
-	break;
+		}
+		operation_->Update();
+		operation_->Draw();
+	break; 
 	case Scene::play:
 		// 自キャラの更新
 		player->Update(viewProjection_);

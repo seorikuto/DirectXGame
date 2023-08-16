@@ -16,7 +16,7 @@
 #include "RailCamera.h"
 #include <sstream>
 #include "Title.h"
-
+#include "Operation.h"
 
 /// <summary>
 /// ゲームシーン
@@ -133,4 +133,6 @@ private: // メンバ変数
 	Scene scene_ = scene_;
 	//title
 	Title* title_ = nullptr;
+	//operation
+	Operation* operation_ = nullptr;
 };
