@@ -18,6 +18,7 @@
 #include "Title.h"
 #include "Operation.h"
 #include "Clear.h"
+#include "Over.h"
 
 /// <summary>
 /// ゲームシーン
@@ -138,4 +139,6 @@ private: // メンバ変数
 	Operation* operation_ = nullptr;
 	//clear
 	Clear* clear_ = nullptr;
+	//over
+	Over* over_ = nullptr;
 };

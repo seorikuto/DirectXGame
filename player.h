@@ -42,6 +42,8 @@ public:
 	//マウス
 	void Mouse(ViewProjection& viewProjection);
 
+	bool IsPlayerDead() const { return isPlayerDead_; }
+
 private:
 	WorldTransform worldTransform_;
 
@@ -59,4 +61,7 @@ private:
 
 	//2Dレティクル用スプライト
 	Sprite* sprite2DReticle_ = nullptr;
+
+	//自機フラグ
+	bool isPlayerDead_ = false;
 };

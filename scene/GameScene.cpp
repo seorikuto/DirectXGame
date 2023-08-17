@@ -11,7 +11,6 @@ GameScene::~GameScene() {
 	delete model;
 	delete player;
 	delete debugCamera_;
-	// delete enemy;
 	delete skydome_;
 	delete modelSkydome_;
 	delete railCamera_;
@@ -111,8 +110,11 @@ void GameScene::Update() {
 	case Scene::play:
 		// 自キャラの更新
 		player->Update(viewProjection_);
-		player->Rotate();
-		
+		//player->Rotate();
+		//自キャラデスフラグ
+		if (player->IsPlayerDead()) {
+			scene_ = Scene::gameover;
+		}
 		// 敵デスフラグ
 		enemies_.remove_if([](Enemy* enemy) {
 			if (enemy->IsEneDead()) {
@@ -143,6 +145,7 @@ void GameScene::Update() {
 	case Scene::gameclear:
 	break;
 	case Scene::gameover:
+		over_->Update();
 	break;
 	}
 
@@ -240,7 +243,6 @@ void GameScene::CheckAllCollisions() {
 	// 弾リストの取得
 	const std::list<PlayerBullet*>& bullets = player->GetBullet();
 	// 敵弾リストの取得
-	// const std::list<EnemyBullet*>& enemyBullets = enemy->GetEnemyBullets();
 	const std::list<EnemyBullet*>& enemyBullets = enemyBullets_;
 
 #pragma region 自キャラと敵弾の当たり判定
@@ -307,6 +309,26 @@ void GameScene::CheckAllCollisions() {
 		}
 	}
 
+#pragma endregion
+
+#pragma region 自機と敵の当たり判定
+	// 自キャラの座標
+	posA = player->GetWorldPosition();
+	for (Enemy* enemy : enemies_) {
+		posB = enemy->GetWorldPosition();
+		float r1 = 1.0f;
+		float r2 = 1.0f;
+		float distancae = (r1 + r2) * (r1 + r2);
+		//  球と球の交差判定
+		if (distancae > (posB.x - posA.x) * (posB.x - posA.x) +
+		                    (posB.y - posA.y) * (posB.y - posA.y) +
+		                    (posB.z - posA.z) * (posB.z - posA.z)) {
+			// 自機の衝突時コールバックを呼び出す
+			player->OnCollision();
+			// 敵弾の衝突時コールバックを呼び出す
+			enemy->OnCollision();
+		}
+	}
 #pragma endregion
 }
 

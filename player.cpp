@@ -60,18 +60,20 @@ void Player::Update(ViewProjection& viewProjection) {
 	// 押した方向で移動ベクトルを変更
 	worldTransform_.TransferMatrix();
 
-	if (input_->PushKey(DIK_LEFT)) {
+	if (input_->PushKey(DIK_A)) {
 		move.x -= kCharacterSpeed;
 
-	} else if (input_->PushKey(DIK_RIGHT)) {
+	} else if (input_->PushKey(DIK_D)) {
 		move.x += kCharacterSpeed;
 	}
-	if (input_->PushKey(DIK_UP)) {
+	if (input_->PushKey(DIK_W)) {
 		move.y += kCharacterSpeed;
 
-	} else if (input_->PushKey(DIK_DOWN)) {
+	} else if (input_->PushKey(DIK_S)) {
 		move.y -= kCharacterSpeed;
 	}
+
+	Rotate();
 	
 	//攻撃処理
 	AAttack();
@@ -163,10 +165,10 @@ void Player::Rotate() {
 	//回転速さ[ラジアン/flame]
 	const float kRotSpeed = 0.02f;
 	// 押した方向で移動ベクトルを変更
-	if (input_->PushKey(DIK_A)) {
+	if (input_->PushKey(DIK_LEFT)) {
 		worldTransform_.rotation_.y -= kRotSpeed;
 
-	} else if (input_->PushKey(DIK_D)) {
+	} else if (input_->PushKey(DIK_RIGHT)) {
 		worldTransform_.rotation_.y += kRotSpeed;
 	}
 }
@@ -278,9 +280,7 @@ Player::~Player() {
 	delete sprite2DReticle_;
 }
 
-void Player::OnCollision() {
-
-}
+void Player::OnCollision() { isPlayerDead_ = true; }
 
 Vector3 Player::GetWorldPosition() {
 	//ワールド座標を入れる変数

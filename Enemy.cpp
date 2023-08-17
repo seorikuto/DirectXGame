@@ -125,8 +125,8 @@ void Enemy::InitializePhase() {
 
 void Enemy::ApproachUpdate() {
 	    // 移動（ベクトル加算）
-	    if (--enemyTimer_ <= 0) {
-		 worldTransform_.translation_.z -= 0.05f;
+	   if (--enemyTimer_ <= 0) {
+		 //worldTransform_.translation_.z -= 0.05f;
 	    }
 	    // 規定の位置に到着したら離脱
 	    if (worldTransform_.translation_.z < -10.0f) {
