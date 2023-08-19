@@ -15,7 +15,7 @@ class GameScene;
 ///敵
 ///</summary>
 class Enemy {
-	// 攻撃フェーズ
+	//敵パターン
 	enum class Phase {
 		Approach, // 接近
 		Leave,    // 離脱
