@@ -25,6 +25,7 @@ public:
 	void Initialize(Model* model, const Vector3& position);
 	void Update();
 	void Draw(ViewProjection& viewProjection);
+	void Draw2(ViewProjection& viewProjection);
 	
 	void Fire();
 	~Enemy();
@@ -58,8 +59,11 @@ public:
 
 private:
 	WorldTransform worldTransform_;
+
 	Model* model_ = nullptr;
+
 	uint32_t textureHandleEnemy_ = 0u;
+	uint32_t textureHandleEnemy2_ = 0u;
 
 	// 出現<frm>
 	static const int32_t kRespornTime = 60 * 5;
@@ -67,8 +71,7 @@ private:
 	int32_t enemyTimer_ = kRespornTime;
 	//フェーズ
 	Phase phase_ = phase_;
-	////リスト
-	//std::list<EnemyBullet*> enemyBullets_;
+
 	//発射タイマー
 	int fireTimer = 0;
 

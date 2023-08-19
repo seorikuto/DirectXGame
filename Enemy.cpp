@@ -11,12 +11,10 @@ void Enemy::Initialize(Model*model, const Vector3& position) {
 	worldTransform_.Initialize();
 
 	textureHandleEnemy_ = TextureManager::Load("Enemy.png");
-
+	textureHandleEnemy2_ = TextureManager::Load("Enemy2.png");
 	//初期座標
 	worldTransform_.translation_ = position;
-	/*worldTransform_.translation_.x = 20.0f;
-	worldTransform_.translation_.y = 0.0f;
-	worldTransform_.translation_.z = 80.0f;*/
+	
 	
 	// 接近フェーズ初期化
 	InitializePhase();
@@ -35,21 +33,6 @@ void Enemy::Update() {
 
 	worldTransform_.UpdateMatrix(); 
 
-	////// デスフラグの立った弾を処理
-	//enemyBullets_.remove_if([](EnemyBullet* enemyBullet) {
-	//	if (enemyBullet->IsEnemyDead()) {
-	//		delete enemyBullet;
-	//		return true;
-	//	}
-	//	return false;
-	//});
-
-
-	//for (EnemyBullet* enemyBullet : enemyBullets_) {
-	//	enemyBullet->Update();
-	//}
-
-
 	ImGui::Begin("enemy");
 	ImGui::InputInt("firetimer", &fireTimer);
 	ImGui::InputInt("enemytimer", &enemyTimer_);
@@ -59,14 +42,14 @@ void Enemy::Update() {
 	ImGui::End();
 }
 
+
+
 void Enemy::Draw(ViewProjection& viewProjection) { 
 	model_->Draw(worldTransform_, viewProjection, textureHandleEnemy_);
+}
 
-	////弾描画
-	//for (EnemyBullet* enemyBullet : enemyBullets_) {
-	//	enemyBullet->Draw(viewProjection);
-	//}
-
+void Enemy::Draw2(ViewProjection& viewProjection) { 
+	model_->Draw(worldTransform_, viewProjection, textureHandleEnemy2_);
 }
 
 void Enemy::Fire() {
@@ -121,7 +104,6 @@ void Enemy::InitializePhase() {
 	    // 発射タイマーを初期化
 		    fireTimer = kFireInterval;
 }
-
 
 void Enemy::ApproachUpdate() {
 	    // 移動（ベクトル加算）

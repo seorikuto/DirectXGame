@@ -80,6 +80,15 @@ public: // メンバ関数
 	//敵発生コマンドの更新
 	void UpdateEnemyPopCommands();
 
+	//複数敵
+	void AddEnemy2(Vector3 pos);
+
+	// 敵発生データ読み込み
+	void LoadEnemy2PopData();
+
+	// 敵発生コマンドの更新
+	void UpdateEnemy2PopCommands();
+
 	//リスト
 	const std::list<EnemyBullet*>& GetEnemyBullets() { return enemyBullets_; }
 
@@ -122,10 +131,14 @@ private: // メンバ変数
 
 	//敵弾リスト
 	std::list<EnemyBullet*> enemyBullets_;
-	// 敵リスト
+	//敵リスト
 	std::list<Enemy*> enemies_;
+	//敵2リスト
+	std::list<Enemy*> enemies2_;
 	//敵発生コマンド
 	std::stringstream enemyPopCommands;
+	//敵2発生コマンド
+	std::stringstream enemy2PopCommands;
 	// 待機フラグ
 	bool waitFlag = false;
 	//待機タイマー
