@@ -17,7 +17,8 @@ class GameScene;
 class Enemy {
 	//敵パターン
 	enum class Phase {
-		Approach, // 接近
+		EneAttack,	//敵
+		EneFire,	//2種類目	
 		Leave,    // 離脱
 	};
 
@@ -29,6 +30,8 @@ public:
 	
 	void Fire();
 	~Enemy();
+	//敵1
+	void EneAttack();
 	//接近フェーズ更新関数
 	void ApproachUpdate();
 	//離脱フェーズ更新関数
@@ -59,7 +62,7 @@ public:
 
 private:
 	WorldTransform worldTransform_;
-
+	WorldTransform worldTransform2_;
 	Model* model_ = nullptr;
 
 	uint32_t textureHandleEnemy_ = 0u;
@@ -84,6 +87,7 @@ private:
 	// フラグ
 	bool isEneDead_ = false;
 	
-	
+	//キャラスピード
+	float speed_ = 2.0f;
 
 };

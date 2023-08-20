@@ -30,6 +30,7 @@ class GameScene {
 		title,
 		operation,
 		play,
+		play2,
 		gameclear,
 		gameover,
 	};

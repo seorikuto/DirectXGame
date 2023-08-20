@@ -119,35 +119,45 @@ void GameScene::Update() {
 		if (player->IsPlayerDead()) {
 			scene_ = Scene::gameover;
 		}
-		// 敵デスフラグ
-		enemies_.remove_if([](Enemy* enemy) {
-			if (enemy->IsEneDead()) {
-				delete enemy;
-				return true;
-			}
-			return false;
-		});
-		//// デスフラグの立った弾を処理
-		enemyBullets_.remove_if([](EnemyBullet* enemyBullet) {
-			if (enemyBullet->IsEnemyDead()) {
-				delete enemyBullet;
-				return true;
-			}
-			return false;
-		});
-		UpdateEnemyPopCommands();
 		UpdateEnemy2PopCommands();
-
-		for (Enemy* enemy : enemies_) {
-			enemy->Update();
-		}
+	
 		for (Enemy* enemy2 : enemies2_) {
 			enemy2->Update();
+		}
+		if (input->TriggerKey(DIK_K)) {
+			scene_ = Scene::play2;
+		}
+
+		railCamera_->Update();
+	break;
+	case Scene::play2:
+	if (player->IsPlayerDead()) {
+			scene_ = Scene::gameover;
+	}
+	player->Update(viewProjection_);
+	// 敵デスフラグ
+	enemies_.remove_if([](Enemy* enemy) {
+		if (enemy->IsEneDead()) {
+			delete enemy;
+			return true;
+		}
+		return false;
+	});
+	//// デスフラグの立った弾を処理
+	enemyBullets_.remove_if([](EnemyBullet* enemyBullet) {
+		if (enemyBullet->IsEnemyDead()) {
+			delete enemyBullet;
+			return true;
+		}
+		return false;
+	});
+		for (Enemy* enemy : enemies_) {
+			enemy->Update();
 		}
 		for (EnemyBullet* enemyBullet : enemyBullets_) {
 			enemyBullet->Update();
 		}
-
+		UpdateEnemyPopCommands();
 		railCamera_->Update();
 	break;
 	case Scene::gameclear:

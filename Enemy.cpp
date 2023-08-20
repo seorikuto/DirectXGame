@@ -9,12 +9,12 @@ void Enemy::Initialize(Model*model, const Vector3& position) {
 	assert(model);
 	model_ = model;
 	worldTransform_.Initialize();
-
+	worldTransform2_.Initialize();
 	textureHandleEnemy_ = TextureManager::Load("Enemy.png");
 	textureHandleEnemy2_ = TextureManager::Load("Enemy2.png");
 	//初期座標
 	worldTransform_.translation_ = position;
-	
+	worldTransform2_.translation_ = position;
 	
 	// 接近フェーズ初期化
 	InitializePhase();
@@ -22,8 +22,11 @@ void Enemy::Initialize(Model*model, const Vector3& position) {
 
 void Enemy::Update() { 
 	switch (phase_) { 
-	case Phase::Approach:
+	case Phase::EneAttack:
 	default:
+		EneAttack();
+		break;
+	case Phase::EneFire:
 		ApproachUpdate();
 		break;
 	case Phase::Leave:
@@ -32,6 +35,7 @@ void Enemy::Update() {
 	}
 
 	worldTransform_.UpdateMatrix(); 
+	worldTransform2_.UpdateMatrix();
 
 	ImGui::Begin("enemy");
 	ImGui::InputInt("firetimer", &fireTimer);
@@ -49,7 +53,7 @@ void Enemy::Draw(ViewProjection& viewProjection) {
 }
 
 void Enemy::Draw2(ViewProjection& viewProjection) { 
-	model_->Draw(worldTransform_, viewProjection, textureHandleEnemy2_);
+	model_->Draw(worldTransform2_, viewProjection, textureHandleEnemy2_);
 }
 
 void Enemy::Fire() {
@@ -105,10 +109,21 @@ void Enemy::InitializePhase() {
 		    fireTimer = kFireInterval;
 }
 
+void Enemy::EneAttack() { 
+	worldTransform2_.translation_.z -= speed_;
+	if (worldTransform2_.translation_.z < 0) {
+		speed_ -= 2.0f;
+	}
+	if (worldTransform2_.translation_.z > 90) {
+		speed_ += 2.0f;
+	}
+
+}
+
 void Enemy::ApproachUpdate() {
 	    // 移動（ベクトル加算）
 	   if (--enemyTimer_ <= 0) {
-		 //worldTransform_.translation_.z -= 0.05f;
+		 worldTransform_.translation_.z -= 0.05f;
 	    }
 	    // 規定の位置に到着したら離脱
 	    if (worldTransform_.translation_.z < -10.0f) {
