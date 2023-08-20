@@ -117,6 +117,7 @@ void Enemy::EneAttack() {
 	if (worldTransform2_.translation_.z > 90) {
 		speed_ += 2.0f;
 	}
+	
 
 }
 
