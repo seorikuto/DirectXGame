@@ -12,6 +12,7 @@
 #include "player.h"
 #include "DebugCamera.h"
 #include "Enemy.h"
+#include "Enemy2.h"
 #include "Skydome.h"
 #include "RailCamera.h"
 #include <sstream>
@@ -135,7 +136,7 @@ private: // メンバ変数
 	//敵リスト
 	std::list<Enemy*> enemies_;
 	//敵2リスト
-	std::list<Enemy*> enemies2_;
+	std::list<Enemy2*> enemies2_;
 	//敵発生コマンド
 	std::stringstream enemyPopCommands;
 	//敵2発生コマンド

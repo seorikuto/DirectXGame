@@ -18,7 +18,7 @@ GameScene::~GameScene() {
 	for (Enemy* enemy : enemies_) {
 		delete enemy;
 	}
-	for (Enemy* enemy2 : enemies2_) {
+	for (Enemy2* enemy2 : enemies2_) {
 		delete enemy2;
 	}
 	// 敵bulletの開放
@@ -119,9 +119,17 @@ void GameScene::Update() {
 		if (player->IsPlayerDead()) {
 			scene_ = Scene::gameover;
 		}
+		// 敵デスフラグ
+		enemies2_.remove_if([](Enemy2* enemy2) {
+			if (enemy2->IsEneDead()) {
+				delete enemy2;
+				return true;
+			}
+			return false;
+		});
 		UpdateEnemy2PopCommands();
 	
-		for (Enemy* enemy2 : enemies2_) {
+		for (Enemy2* enemy2 : enemies2_) {
 			enemy2->Update();
 		}
 		if (input->TriggerKey(DIK_K)) {
@@ -229,8 +237,8 @@ void GameScene::Draw() {
 	for (Enemy* enemy : enemies_) {
 		enemy->Draw(viewProjection_);
 	}
-	for (Enemy* enemy2 : enemies2_) {
-		enemy2->Draw2(viewProjection_);
+	for (Enemy2* enemy2 : enemies2_) {
+		enemy2->Draw(viewProjection_);
 	}
 	// 弾描画
 	for (EnemyBullet* enemyBullet : enemyBullets_) {
@@ -286,6 +294,27 @@ void GameScene::CheckAllCollisions() {
 	//		enemyBullet->OnCollision();
 	//	}
 	//}
+#pragma endregion
+
+#pragma region 自弾と敵キャラの当たり判定
+	for (PlayerBullet* bullet : bullets) {
+		for (Enemy2* enemy2 : enemies2_) {
+			posA = bullet->GetWorldPosition();
+			posB = enemy2->GetWorldPosition();
+			float r1 = 1.0f;
+			float r2 = 1.0f;
+			float distancae = (r1 + r2) * (r1 + r2);
+			//  球と球の交差判定
+			if (distancae > (posB.x - posA.x) * (posB.x - posA.x) +
+			                    (posB.y - posA.y) * (posB.y - posA.y) +
+			                    (posB.z - posA.z) * (posB.z - posA.z)) {
+				// 敵キャラの衝突時コールバックを呼び出す
+				bullet->OnCollision();
+				// 敵弾の衝突時コールバックを呼び出す
+				enemy2->OnCollision();
+			}
+		}
+	}
 #pragma endregion
 
 #pragma region 自弾と敵キャラの当たり判定
@@ -351,6 +380,8 @@ void GameScene::CheckAllCollisions() {
 		}
 	}
 #pragma endregion
+
+
 }
 
 void GameScene::AddEnemy(Vector3 pos) {
@@ -431,7 +462,7 @@ void GameScene::UpdateEnemyPopCommands() {
 }
 
 void GameScene::AddEnemy2(Vector3 pos) {
-	Enemy* enemy2 = new Enemy();
+	Enemy2* enemy2 = new Enemy2();
 	enemy2->Initialize(model, pos);
 	enemy2->SetPlayer(player);
 	enemy2->SetGameScene(this);
