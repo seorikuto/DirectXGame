@@ -94,7 +94,9 @@ public: // メンバ関数
 	//リスト
 	const std::list<EnemyBullet*>& GetEnemyBullets() { return enemyBullets_; }
 
-	
+	//ファイル初期化
+	void PopInitialize();
+
 
 private: // メンバ変数
 	DirectXCommon* dxCommon = nullptr;
@@ -115,8 +117,7 @@ private: // メンバ変数
 	Model* model = nullptr;
 	//プレイヤー
 	Player* player = nullptr;
-	//エネミー
-	//Enemy* enemy = nullptr;
+
 
 	//デバッグカメラ有効
 	bool isDebugCameraActive_ = false;
@@ -145,6 +146,9 @@ private: // メンバ変数
 	bool waitFlag = false;
 	//待機タイマー
 	int32_t waitTimer_ = 180;
+	//play時間
+	int playTimer_ = 300;
+
 
 	//scene
 	Scene scene_ = scene_;

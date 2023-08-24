@@ -211,22 +211,6 @@ void Player::AAttack() {
 		// 弾を登録する
 		bullets_.push_back(newBullet);
 	}
-
-	XINPUT_STATE joyState;
-	//ゲームパッド未接続なら何もせず抜ける
-	if (!Input::GetInstance()->GetJoystickState(0, joyState)) {
-		return;
-	}
-	//Rトリガーを押していたら
-	if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) {
-		// 弾の生成、初期化
-		PlayerBullet* newBullet = new PlayerBullet();
-		newBullet->Initialize(model_, GetWorldPosition(), velocity);
-
-		// 弾を登録する
-		bullets_.push_back(newBullet);
-	}
-
 }
 
 void Player::SAttack() {
@@ -256,20 +240,6 @@ void Player::SAttack() {
 		bullets_.push_back(newBullet);
 	}
 
-	XINPUT_STATE joyState;
-	// ゲームパッド未接続なら何もせず抜ける
-	if (!Input::GetInstance()->GetJoystickState(0, joyState)) {
-		return;
-	}
-	// Rトリガーを押していたら
-	if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) {
-		// 弾の生成、初期化
-		PlayerBullet* newBullet = new PlayerBullet();
-		newBullet->Initialize(model_, GetWorldPosition(), velocity);
-
-		// 弾を登録する
-		bullets_.push_back(newBullet);
-	}
 }
 
 Player::~Player() {

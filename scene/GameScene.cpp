@@ -25,11 +25,9 @@ GameScene::~GameScene() {
 	for (EnemyBullet* enemyBullet : enemyBullets_) {
 		delete enemyBullet;
 	}
-	
 }
 
 void GameScene::Initialize() {
-
 	worldTransform_.Initialize();
 	viewProjection_.Initialize();
 
@@ -43,7 +41,7 @@ void GameScene::Initialize() {
 	textureHandle = TextureManager::Load("sample.png");
 
 	// 敵キャラの生成
-	//enemy = new Enemy();
+	// enemy = new Enemy();
 
 	// 天球生成
 	skydome_ = new Skydome();
@@ -54,10 +52,10 @@ void GameScene::Initialize() {
 	// 読み込み
 	// モデル生成
 	model = Model::Create();
-	//AddEnemy({worldTransform_.translation_.x, worldTransform_.translation_.y,worldTransform_.translation_.z});
-	//AddEnemy({0.0f,3.0f,80.0f});
-	// player->Initialize(model, textureHandle);
-	// enemy->Initialize(model, worldTransform_.translation_);
+	// AddEnemy({worldTransform_.translation_.x,
+	// worldTransform_.translation_.y,worldTransform_.translation_.z}); AddEnemy({0.0f,3.0f,80.0f});
+	//  player->Initialize(model, textureHandle);
+	//  enemy->Initialize(model, worldTransform_.translation_);
 
 	// 敵キャラにゲームシーンを渡す
 	// enemy->SetGameScene(this);
@@ -84,40 +82,49 @@ void GameScene::Initialize() {
 	// デバッグカメラの生成
 	debugCamera_ = new DebugCamera(1280, 720);
 
-
-
 	dxCommon = DirectXCommon::GetInstance();
 	input = Input::GetInstance();
 	audio = Audio::GetInstance();
 
 	LoadEnemyPopData();
 	LoadEnemy2PopData();
-
 }
 
 void GameScene::Update() {
-	switch (scene_) { 
+	switch (scene_) {
 	case Scene::title:
 		if (input->TriggerKey(DIK_RETURN)) {
 			scene_ = Scene::operation;
 		}
 		title_->Update();
 		title_->Draw();
-	break;
+	
+		break;
 	case Scene::operation:
 		if (input->PushKey(DIK_0)) {
-			scene_ = Scene::play;	
+			scene_ = Scene::play;
 		}
 		operation_->Update();
 		operation_->Draw();
-	break; 
+		break;
 	case Scene::play:
 		// 自キャラの更新
 		player->Update(viewProjection_);
-		//player->Rotate();
-		//自キャラデスフラグ
+		// player->Rotate();
+		// 自キャラデスフラグ
 		if (player->IsPlayerDead()) {
 			scene_ = Scene::gameover;
+		}
+		for (Enemy2* enemy2 : enemies2_) {
+			playTimer_--;
+			if (playTimer_ < 0 && enemy2->IsEneDead()) {
+				scene_ = Scene::play2;
+			
+			}
+			enemy2->Update();
+			ImGui::Begin("playtimer");
+			ImGui::InputInt("playtimer", &playTimer_);
+			ImGui::End();
 		}
 		// 敵デスフラグ
 		enemies2_.remove_if([](Enemy2* enemy2) {
@@ -128,37 +135,30 @@ void GameScene::Update() {
 			return false;
 		});
 		UpdateEnemy2PopCommands();
-	
-		for (Enemy2* enemy2 : enemies2_) {
-			enemy2->Update();
-		}
-		if (input->TriggerKey(DIK_K)) {
-			scene_ = Scene::play2;
-		}
 
 		railCamera_->Update();
-	break;
+		break;
 	case Scene::play2:
-	if (player->IsPlayerDead()) {
+		if (player->IsPlayerDead()) {
 			scene_ = Scene::gameover;
-	}
-	player->Update(viewProjection_);
-	// 敵デスフラグ
-	enemies_.remove_if([](Enemy* enemy) {
-		if (enemy->IsEneDead()) {
-			delete enemy;
-			return true;
 		}
-		return false;
-	});
-	//// デスフラグの立った弾を処理
-	enemyBullets_.remove_if([](EnemyBullet* enemyBullet) {
-		if (enemyBullet->IsEnemyDead()) {
-			delete enemyBullet;
-			return true;
-		}
-		return false;
-	});
+		player->Update(viewProjection_);
+		//敵デスフラグ
+		enemies_.remove_if([](Enemy* enemy) {
+			if (enemy->IsEneDead()) {
+				delete enemy;
+				return true;
+			}
+			return false;
+		});
+		//デスフラグの立った弾を処理
+		enemyBullets_.remove_if([](EnemyBullet* enemyBullet) {
+			if (enemyBullet->IsEnemyDead()) {
+				delete enemyBullet;
+				return true;
+			}
+			return false;
+		});
 		for (Enemy* enemy : enemies_) {
 			enemy->Update();
 		}
@@ -167,41 +167,72 @@ void GameScene::Update() {
 		}
 		UpdateEnemyPopCommands();
 		railCamera_->Update();
-	break;
+		break;
 	case Scene::gameclear:
-	break;
+		clear_->Update();
+		break;
 	case Scene::gameover:
 		over_->Update();
-	break;
+		PopInitialize();
+		if (player->IsPlayerDead() || player->IsPlayerDead() == 0) {
+			player->Initialize(model, textureHandle, {0, 0, 0});
+		}
+		//敵処理
+		enemies_.remove_if([](Enemy* enemy) {
+			if (enemy->IsEneDead() == 0) {
+				delete enemy;
+				return true;
+			}
+			return false;
+		});
+		enemies2_.remove_if([](Enemy2* enemy2) {
+			if (enemy2->IsEneDead() == 0) {
+				delete enemy2;
+				return true;
+			}
+			return false;
+		});
+		// デスフラグの立った弾を処理
+		enemyBullets_.remove_if([](EnemyBullet* enemyBullet) {
+			if (enemyBullet->IsEnemyDead() == 0) {
+				delete enemyBullet;
+				return true;
+			}
+			return false;
+		});
+		if (input->PushKey(DIK_SPACE)) {
+			scene_ = Scene::title;
+		}
+
+		break;
 	}
 
-			// デバッグカメラの更新
+	// デバッグカメラの更新
 	debugCamera_->Update();
 #ifdef _DEBUG
 	if (input->TriggerKey(DIK_DELETE)) {
-	if (isDebugCameraActive_ == true) {
+		if (isDebugCameraActive_ == true) {
 			isDebugCameraActive_ = false;
-	} else {
+		} else {
 			isDebugCameraActive_ = true;
-	}
+		}
 	}
 #endif // DEBUG
 
 	if (isDebugCameraActive_) {
-	debugCamera_->Update();
-	viewProjection_.matView = debugCamera_->GetViewProjection().matView;
-	viewProjection_.matProjection = debugCamera_->GetViewProjection().matProjection;
-	viewProjection_.matView = railCamera_->GetViewProjection().matView;
-	viewProjection_.matProjection = railCamera_->GetViewProjection().matProjection;
-	viewProjection_.TransferMatrix();
+		debugCamera_->Update();
+		//viewProjection_.matView = debugCamera_->GetViewProjection().matView;
+		//viewProjection_.matProjection = debugCamera_->GetViewProjection().matProjection;
+		viewProjection_.matView = railCamera_->GetViewProjection().matView;
+		viewProjection_.matProjection = railCamera_->GetViewProjection().matProjection;
+		viewProjection_.TransferMatrix();
 	} else {
-	viewProjection_.UpdateMatrix();
+		viewProjection_.UpdateMatrix();
 	}
 
 	ImGui::Begin("waitTimer");
 	ImGui::InputInt("waitTimer", &waitTimer_);
 	ImGui::End();
-
 }
 
 void GameScene::Draw() {
@@ -233,7 +264,7 @@ void GameScene::Draw() {
 	// 自キャラの描画
 	player->Draw(viewProjection_);
 	skydome_->Draw(viewProjection_);
-	//敵描画
+	// 敵描画
 	for (Enemy* enemy : enemies_) {
 		enemy->Draw(viewProjection_);
 	}
@@ -258,8 +289,7 @@ void GameScene::Draw() {
 	/// </summary>
 
 	player->DrawUI();
-
-
+	
 	// スプライト描画後処理
 	Sprite::PostDraw();
 
@@ -275,25 +305,25 @@ void GameScene::CheckAllCollisions() {
 	const std::list<EnemyBullet*>& enemyBullets = enemyBullets_;
 
 #pragma region 自キャラと敵弾の当たり判定
-	//// 自キャラの座標
-	//posA = player->GetWorldPosition();
-	//// 自キャラと敵弾全ての当たり判定
-	//for (EnemyBullet* enemyBullet : enemyBullets) {
-	//	// 敵弾の座標
-	//	posB = enemyBullet->GetWorldPosition();
-	//	float r1 = 1.0f;
-	//	float r2 = 1.0f;
-	//	float distancae = (r1 + r2) * (r1 + r2);
-	//	//  球と球の交差判定
-	//	if (distancae > (posB.x - posA.x) * (posB.x - posA.x) +
-	//	                    (posB.y - posA.y) * (posB.y - posA.y) +
-	//	                    (posB.z - posA.z) * (posB.z - posA.z)) {
-	//		// 自キャラの衝突時コールバックを呼び出す
-	//		player->OnCollision();
-	//		// 敵弾の衝突時コールバックを呼び出す
-	//		enemyBullet->OnCollision();
-	//	}
-	//}
+	// 自キャラの座標
+	 posA = player->GetWorldPosition();
+	// 自キャラと敵弾全ての当たり判定
+	 for (EnemyBullet* enemyBullet : enemyBullets) {
+		// 敵弾の座標
+		posB = enemyBullet->GetWorldPosition();
+		float r1 = 1.0f;
+		float r2 = 1.0f;
+		float distancae = (r1 + r2) * (r1 + r2);
+		//  球と球の交差判定
+		if (distancae > (posB.x - posA.x) * (posB.x - posA.x) +
+		                    (posB.y - posA.y) * (posB.y - posA.y) +
+		                    (posB.z - posA.z) * (posB.z - posA.z)) {
+			// 自キャラの衝突時コールバックを呼び出す
+			player->OnCollision();
+			// 敵弾の衝突時コールバックを呼び出す
+			enemyBullet->OnCollision();
+		}
+	 }
 #pragma endregion
 
 #pragma region 自弾と敵キャラの当たり判定
@@ -380,8 +410,6 @@ void GameScene::CheckAllCollisions() {
 		}
 	}
 #pragma endregion
-
-
 }
 
 void GameScene::AddEnemy(Vector3 pos) {
@@ -390,7 +418,6 @@ void GameScene::AddEnemy(Vector3 pos) {
 	enemy->SetPlayer(player);
 	enemy->SetGameScene(this);
 	enemies_.push_back(enemy);
-
 }
 
 void GameScene::AddEnemyBullet(EnemyBullet* enemyBullet) {
@@ -399,7 +426,7 @@ void GameScene::AddEnemyBullet(EnemyBullet* enemyBullet) {
 }
 
 void GameScene::LoadEnemyPopData() {
-	//ファイルを開く
+	// ファイルを開く
 	std::ifstream file;
 	file.open("Resources/enemyPop.csv");
 	assert(file.is_open());
@@ -407,7 +434,6 @@ void GameScene::LoadEnemyPopData() {
 	enemyPopCommands << file.rdbuf();
 	// ファイル閉じる
 	file.close();
-
 }
 
 void GameScene::UpdateEnemyPopCommands() {
@@ -420,14 +446,14 @@ void GameScene::UpdateEnemyPopCommands() {
 		return;
 	}
 
-	//1行分の文字列を入れる変数
+	// 1行分の文字列を入れる変数
 	std::string line;
 
-	//ループ
+	// ループ
 	while (getline(enemyPopCommands, line)) {
 		std::istringstream line_stream(line);
 		std::string word;
-		//区切りで行の先頭文字列を取得
+		// 区切りで行の先頭文字列を取得
 		getline(line_stream, word, ',');
 
 		if (word.find("//") == 0) {
@@ -448,7 +474,7 @@ void GameScene::UpdateEnemyPopCommands() {
 			// 敵発生
 			AddEnemy(Vector3(x, y, z));
 		}
-		//WAITコマンド
+		// WAITコマンド
 		else if (word.find("WAIT") == 0) {
 			getline(line_stream, word, ',');
 			int32_t waitTime = atoi(word.c_str());
@@ -457,7 +483,6 @@ void GameScene::UpdateEnemyPopCommands() {
 
 			break;
 		}
-
 	}
 }
 
@@ -524,8 +549,25 @@ void GameScene::UpdateEnemy2PopCommands() {
 			int32_t waitTime = atoi(word.c_str());
 			waitFlag = true;
 			waitTimer_ = waitTime;
-
+		
 			break;
 		}
+	}
+}
+
+void GameScene::PopInitialize() {
+	waitFlag = false;
+	waitTimer_ = 180;
+	if (scene_ == Scene::gameover || scene_==Scene::gameclear ) {
+		// ファイルを開く
+		std::ifstream file;
+		file.open("Resources/enemyPop.csv");
+		file.open("Resources/enemy2Pop.csv");
+		assert(file.is_open());
+		//元に戻す
+		enemyPopCommands >> file.rdbuf();
+		enemy2PopCommands >> file.rdbuf();
+		// ファイル閉じる
+		file.close();
 	}
 }

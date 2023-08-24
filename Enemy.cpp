@@ -53,6 +53,8 @@ void Enemy::Update() {
 	ImGui::SliderFloat("enemyY", &worldTransform_.translation_.y, -30, 30);
 	ImGui::SliderFloat("enemyZ", &worldTransform_.translation_.z, -80, 80);
 	ImGui::End();
+	ImGui::Begin("play2");
+	ImGui::End();
 }
 
 void Enemy::Draw(ViewProjection& viewProjection) {

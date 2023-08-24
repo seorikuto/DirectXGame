@@ -25,7 +25,6 @@ public:
 	void Initialize(Model* model, const Vector3& position);
 	void Update();
 	void Draw(ViewProjection& viewProjection);
-	//void Draw2(ViewProjection& viewProjection);
 	
 	void Fire();
 	~Enemy();

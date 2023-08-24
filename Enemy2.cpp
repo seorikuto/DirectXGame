@@ -19,19 +19,11 @@ void Enemy2::Initialize(Model* model, const Vector3& position) {
 }
 
 void Enemy2::Update() {
-	/*switch (phase_) {
-	case Phase::EneAttack:
-	default:
-	    EneAttack();
-	    break;
-	case Phase::EneFire:
-	    ApproachUpdate();
-	    break;
-	}*/
-	// 移動（ベクトル加算）
-	if (--enemyTimer_ <= 0) {
-		worldTransform_.translation_.z -= 0.05f;
-	}
+
+	//// 移動（ベクトル加算）
+	//if (--enemyTimer_ <= 0) {
+	//	worldTransform_.translation_.z -= 0.05f;
+	//}
 
 	//// 発射タイマーカウントダウン
 	//fireTimer--;
@@ -45,12 +37,14 @@ void Enemy2::Update() {
 	worldTransform_.UpdateMatrix();
 	// worldTransform2_.UpdateMatrix();
 
-	ImGui::Begin("enemy");
+	ImGui::Begin("enemy2");
 	ImGui::InputInt("firetimer", &fireTimer);
 	ImGui::InputInt("enemytimer", &enemyTimer_);
 	ImGui::SliderFloat("enemyX", &worldTransform_.translation_.x, -80, 80);
 	ImGui::SliderFloat("enemyY", &worldTransform_.translation_.y, -30, 30);
 	ImGui::SliderFloat("enemyZ", &worldTransform_.translation_.z, -80, 80);
+	ImGui::End();
+	ImGui::Begin("play");
 	ImGui::End();
 }
 

@@ -21,6 +21,7 @@ public:
 	void SAttack();
 	
 
+
 	/// <summary>
 	/// デストラクタ
 	/// </summary>
