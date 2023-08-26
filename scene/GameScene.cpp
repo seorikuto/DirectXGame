@@ -48,7 +48,12 @@ void GameScene::Initialize() {
 
 	// レールカメラ
 	railCamera_ = new RailCamera();
+	// ファイル読み込み
+	titleTexturHandle_ = TextureManager::Load("title.png");
+	// スプライト生成
+	sprite_ = Sprite::Create(titleTexturHandle_, {1280, 720});
 
+	//title_->Initialize();
 	// 読み込み
 	// モデル生成
 	model = Model::Create();
@@ -279,7 +284,8 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに背景スプライトの描画処理を追加できる
 	/// </summary>
-	title_->Draw(viewProjection_);
+	
+	//title_->Draw();
 	// スプライト描画後処理
 	Sprite::PostDraw();
 	// 深度バッファクリア
@@ -319,7 +325,10 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに前景スプライトの描画処理を追加できる
 	/// </summary>
+	if (scene_ == Scene::title) {
 
+		sprite_->Draw();
+	}
 	player->DrawUI();
 	
 	// スプライト描画後処理

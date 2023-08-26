@@ -163,4 +163,9 @@ private: // メンバ変数
 	Clear* clear_ = nullptr;
 	//over
 	Over* over_ = nullptr;
+
+		// テクスチャハンドル
+	uint32_t titleTexturHandle_ = 0;
+	// スプライト
+	Sprite* sprite_ = nullptr;
 };
