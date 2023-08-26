@@ -97,8 +97,29 @@ void GameScene::Update() {
 			scene_ = Scene::operation;
 		}
 		title_->Update();
-		title_->Draw();
 	
+		AddEnemy(worldTransform_.translation_);
+		AddEnemy2(worldTransform_.translation_);
+		if (player->IsPlayerDead()) {
+		}
+		// 敵処理
+		enemies_.remove_if([](Enemy* enemy) {
+			if (enemy->IsEneDead()) {
+				return false;
+			}
+			return true;
+		});
+		enemies2_.remove_if([](Enemy2* enemy2) {
+			if (enemy2->IsEneDead()) {
+				return false;
+			}
+			return true;
+			});
+
+		
+
+
+
 		break;
 	case Scene::operation:
 		if (input->PushKey(DIK_0)) {
@@ -118,7 +139,7 @@ void GameScene::Update() {
 		for (Enemy2* enemy2 : enemies2_) {
 			playTimer_--;
 			if (playTimer_ < 0 && enemy2->IsEneDead()) {
-				scene_ = Scene::play2;
+				//scene_ = Scene::play2;
 			
 			}
 			enemy2->Update();
@@ -142,6 +163,13 @@ void GameScene::Update() {
 		if (player->IsPlayerDead()) {
 			scene_ = Scene::gameover;
 		}
+
+		for (Enemy* enemy : enemies_) {
+			if (enemy->IsEneDead()) {
+				scene_ = Scene::gameclear;
+			}
+		}
+		
 		player->Update(viewProjection_);
 		//敵デスフラグ
 		enemies_.remove_if([](Enemy* enemy) {
@@ -170,11 +198,15 @@ void GameScene::Update() {
 		break;
 	case Scene::gameclear:
 		clear_->Update();
+		if (input->PushKey(DIK_SPACE)) {
+			scene_ = Scene::title;
+		}
+		PopInitialize();
 		break;
 	case Scene::gameover:
 		over_->Update();
 		PopInitialize();
-		if (player->IsPlayerDead() || player->IsPlayerDead() == 0) {
+		if (player->IsPlayerDead()) {
 			player->Initialize(model, textureHandle, {0, 0, 0});
 		}
 		//敵処理
@@ -247,7 +279,7 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに背景スプライトの描画処理を追加できる
 	/// </summary>
-
+	title_->Draw(viewProjection_);
 	// スプライト描画後処理
 	Sprite::PostDraw();
 	// 深度バッファクリア
@@ -514,6 +546,12 @@ void GameScene::UpdateEnemy2PopCommands() {
 		}
 		return;
 	}
+	if (deathFlag) {
+		deathTime_--;
+		if (deathTime_ <= 0) {
+			scene_ = Scene::play2;
+		}
+	}
 
 	// 1行分の文字列を入れる変数
 	std::string line;
@@ -549,9 +587,19 @@ void GameScene::UpdateEnemy2PopCommands() {
 			int32_t waitTime = atoi(word.c_str());
 			waitFlag = true;
 			waitTimer_ = waitTime;
-		
 			break;
+		} 
+		//DEATHコマンド
+		else if (word.find("DEATH") == 0) {
+			getline(line_stream, word, ',');
+			int32_t Dtime = atoi(word.c_str());
+			deathFlag = true;
+			deathTime_ = Dtime;
+			ImGui::Begin("Dtimer");
+			ImGui::InputInt("Dtime", &Dtime);
+			ImGui::End();
 		}
+		
 	}
 }
 
@@ -565,8 +613,10 @@ void GameScene::PopInitialize() {
 		file.open("Resources/enemy2Pop.csv");
 		assert(file.is_open());
 		//元に戻す
-		enemyPopCommands >> file.rdbuf();
-		enemy2PopCommands >> file.rdbuf();
+		if (enemyPopCommands << file.rdbuf() || enemy2PopCommands << file.rdbuf()) {
+			enemyPopCommands >> file.rdbuf();
+			enemy2PopCommands >> file.rdbuf();
+		}
 		// ファイル閉じる
 		file.close();
 	}

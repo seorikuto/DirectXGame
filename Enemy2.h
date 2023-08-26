@@ -20,10 +20,9 @@ public:
 	void Update();
 	void Draw(ViewProjection& viewProjection);
 	
-
-	//void Fire();
 	~Enemy2();
 
+	void DeathMotion();
 
 	// 発射間隔
 	static const int kFireInterval = 60;

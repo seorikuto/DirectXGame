@@ -142,13 +142,16 @@ private: // メンバ変数
 	std::stringstream enemyPopCommands;
 	//敵2発生コマンド
 	std::stringstream enemy2PopCommands;
-	// 待機フラグ
+	//待機フラグ
 	bool waitFlag = false;
 	//待機タイマー
 	int32_t waitTimer_ = 180;
 	//play時間
 	int playTimer_ = 300;
-
+	//deathフラグ
+	bool deathFlag = false;
+	//deathタイマー
+	int32_t deathTime_ = 300;
 
 	//scene
 	Scene scene_ = scene_;
