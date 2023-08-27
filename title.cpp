@@ -13,6 +13,7 @@ void Title::Initialize() {
 }
 
 void Title::Update() {
+
 	ImGui::Begin("title");
 	ImGui::End();
 }
