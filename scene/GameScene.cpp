@@ -33,7 +33,8 @@ void GameScene::Initialize() {
 
 	// レティクルのテクスチャ
 	TextureManager::Load("target.png");
-
+	//タイトル生成
+	title_ = new Title();
 	// 自キャラの生成
 	player = new Player();
 	Vector3 playerPosition{0, 0, 0};
@@ -49,11 +50,11 @@ void GameScene::Initialize() {
 	// レールカメラ
 	railCamera_ = new RailCamera();
 	// ファイル読み込み
-	titleTexturHandle_ = TextureManager::Load("title.png");
-	// スプライト生成
-	sprite_ = Sprite::Create(titleTexturHandle_, {1280, 720});
-
-	//title_->Initialize();
+	
+	//titleTexturHandle_ = TextureManager::Load("title.png");
+	//// スプライト生成
+	//sprite_ = Sprite::Create(titleTexturHandle_, {0, 0});
+	title_->Initialize();
 	// 読み込み
 	// モデル生成
 	model = Model::Create();
@@ -74,7 +75,6 @@ void GameScene::Initialize() {
 	modelSkydome_ = Model::CreateFromOBJ("skydome", true);
 	// 天球初期化
 	skydome_->Initialize(modelSkydome_);
-
 	// レールカメラ初期化
 	railCamera_->Initialize(worldTransform_.translation_, worldTransform_.translation_);
 	// 自キャラとレールカメラの親子関係を結ぶ
@@ -102,7 +102,8 @@ void GameScene::Update() {
 			scene_ = Scene::operation;
 		}
 		title_->Update();
-	
+		//Vector2 postion = sprite_->GetPosition();
+		//sprite_->SetPosition(postion);
 		AddEnemy(worldTransform_.translation_);
 		AddEnemy2(worldTransform_.translation_);
 		if (player->IsPlayerDead()) {
@@ -244,6 +245,7 @@ void GameScene::Update() {
 		break;
 	}
 
+
 	// デバッグカメラの更新
 	debugCamera_->Update();
 #ifdef _DEBUG
@@ -284,7 +286,7 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに背景スプライトの描画処理を追加できる
 	/// </summary>
-	
+
 	//title_->Draw();
 	// スプライト描画後処理
 	Sprite::PostDraw();
@@ -302,6 +304,7 @@ void GameScene::Draw() {
 	// 自キャラの描画
 	player->Draw(viewProjection_);
 	skydome_->Draw(viewProjection_);
+
 	// 敵描画
 	for (Enemy* enemy : enemies_) {
 		enemy->Draw(viewProjection_);
@@ -326,8 +329,8 @@ void GameScene::Draw() {
 	/// ここに前景スプライトの描画処理を追加できる
 	/// </summary>
 	if (scene_ == Scene::title) {
-
-		sprite_->Draw();
+	title_->Draw();
+	
 	}
 	player->DrawUI();
 	

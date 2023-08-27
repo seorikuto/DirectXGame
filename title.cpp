@@ -1,22 +1,22 @@
 #include "Title.h"
 Title::Title() {
-
 }
 
-Title::~Title() { delete sprite_; }
+Title::~Title() {
+}
 
-//void Title::Initialize() {
-//	//ファイル読み込み
-//	titleTexturHandle_ = TextureManager::Load("title.png");
-//	//スプライト生成
-//	sprite_ = Sprite::Create(titleTexturHandle_, {1280, 720});
-//}
+void Title::Initialize() {
+	//ハンドル読み込み
+	titleTexturHandle_ = TextureManager::Load("title.png");
+	//スプライト生成
+	sprite_ = Sprite::Create(titleTexturHandle_, {0, 0});
+}
 
 void Title::Update() {
 	ImGui::Begin("title");
 	ImGui::End();
 }
 
-//void Title::Draw() { 
-//	sprite_->Draw();
-//}
+void Title::Draw() { 
+	sprite_->Draw();
+}
