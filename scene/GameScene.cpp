@@ -98,37 +98,22 @@ void GameScene::Initialize() {
 void GameScene::Update() {
 	switch (scene_) {
 	case Scene::title:
-		if (input->TriggerKey(DIK_RETURN)) {
+		if (title_->StartCollision() && input->IsTriggerMouse(0)) {
 			scene_ = Scene::operation;
 		}
 		title_->Update();
-		//Vector2 postion = sprite_->GetPosition();
-		//sprite_->SetPosition(postion);
+		PopInitialize();
 		AddEnemy(worldTransform_.translation_);
 		AddEnemy2(worldTransform_.translation_);
-		if (player->IsPlayerDead()) {
-		}
-		// 敵処理
-		enemies_.remove_if([](Enemy* enemy) {
-			if (enemy->IsEneDead()) {
-				return false;
-			}
-			return true;
-		});
-		enemies2_.remove_if([](Enemy2* enemy2) {
-			if (enemy2->IsEneDead()) {
-				return false;
-			}
-			return true;
-			});
-
 		
-
-
-
+		// 敵処理
+		enemies2_.clear();
+		enemies_.clear();
+		enemyBullets_.clear();
+		
 		break;
 	case Scene::operation:
-		if (input->PushKey(DIK_0)) {
+		if (input->IsTriggerMouse(0)) {
 			scene_ = Scene::play;
 		}
 		operation_->Update();
@@ -143,16 +128,19 @@ void GameScene::Update() {
 			scene_ = Scene::gameover;
 		}
 		for (Enemy2* enemy2 : enemies2_) {
-			playTimer_--;
-			if (playTimer_ < 0 && enemy2->IsEneDead()) {
-				//scene_ = Scene::play2;
-			
-			}
 			enemy2->Update();
-			ImGui::Begin("playtimer");
-			ImGui::InputInt("playtimer", &playTimer_);
-			ImGui::End();
 		}
+		//for (Enemy2* enemy2 : enemies2_) {
+		//	playTimer_--;
+		//	if (playTimer_ < 0 && enemy2->IsEneDead()) {
+		//		//scene_ = Scene::play2;
+		//	
+		//	}
+		//	enemy2->Update();
+		//	ImGui::Begin("playtimer");
+		//	ImGui::InputInt("playtimer", &playTimer_);
+		//	ImGui::End();
+		//}
 		// 敵デスフラグ
 		enemies2_.remove_if([](Enemy2* enemy2) {
 			if (enemy2->IsEneDead()) {
@@ -170,11 +158,11 @@ void GameScene::Update() {
 			scene_ = Scene::gameover;
 		}
 
-		for (Enemy* enemy : enemies_) {
+		/*for (Enemy* enemy : enemies_) {
 			if (enemy->IsEneDead()) {
 				scene_ = Scene::gameclear;
 			}
-		}
+		}*/
 		
 		player->Update(viewProjection_);
 		//敵デスフラグ
@@ -204,17 +192,12 @@ void GameScene::Update() {
 		break;
 	case Scene::gameclear:
 		clear_->Update();
-		if (input->PushKey(DIK_SPACE)) {
+		if (input->IsTriggerMouse(0)) {
 			scene_ = Scene::title;
 		}
-		PopInitialize();
 		break;
 	case Scene::gameover:
 		over_->Update();
-		PopInitialize();
-		if (player->IsPlayerDead()) {
-			player->Initialize(model, textureHandle, {0, 0, 0});
-		}
 		//敵処理
 		enemies_.remove_if([](Enemy* enemy) {
 			if (enemy->IsEneDead() == 0) {
@@ -238,7 +221,7 @@ void GameScene::Update() {
 			}
 			return false;
 		});
-		if (input->PushKey(DIK_SPACE)) {
+		if (input->IsTriggerMouse(0)) {
 			scene_ = Scene::title;
 		}
 
@@ -330,10 +313,10 @@ void GameScene::Draw() {
 	/// </summary>
 	if (scene_ == Scene::title) {
 	title_->Draw();
-	
 	}
+	if (scene_ == Scene::play) {
 	player->DrawUI();
-	
+	}
 	// スプライト描画後処理
 	Sprite::PostDraw();
 
@@ -349,25 +332,27 @@ void GameScene::CheckAllCollisions() {
 	const std::list<EnemyBullet*>& enemyBullets = enemyBullets_;
 
 #pragma region 自キャラと敵弾の当たり判定
-	// 自キャラの座標
-	 posA = player->GetWorldPosition();
-	// 自キャラと敵弾全ての当たり判定
-	 for (EnemyBullet* enemyBullet : enemyBullets) {
-		// 敵弾の座標
-		posB = enemyBullet->GetWorldPosition();
-		float r1 = 1.0f;
-		float r2 = 1.0f;
-		float distancae = (r1 + r2) * (r1 + r2);
-		//  球と球の交差判定
-		if (distancae > (posB.x - posA.x) * (posB.x - posA.x) +
-		                    (posB.y - posA.y) * (posB.y - posA.y) +
-		                    (posB.z - posA.z) * (posB.z - posA.z)) {
-			// 自キャラの衝突時コールバックを呼び出す
-			player->OnCollision();
-			// 敵弾の衝突時コールバックを呼び出す
-			enemyBullet->OnCollision();
-		}
-	 }
+	//// 自キャラの座標
+	// posA = player->GetWorldPosition();
+	//// 自キャラと敵弾全ての当たり判定
+	// for (EnemyBullet* enemyBullet : enemyBullets) {
+	//	// 敵弾の座標
+	//	posB = enemyBullet->GetWorldPosition();
+	//	float r1 = 1.0f;
+	//	float r2 = 1.0f;
+	//	float distancae = (r1 + r2) * (r1 + r2);
+	//	//  球と球の交差判定
+	//	if (distancae > (posB.x - posA.x) * (posB.x - posA.x) +
+	//	                    (posB.y - posA.y) * (posB.y - posA.y) +
+	//	                    (posB.z - posA.z) * (posB.z - posA.z)) {
+	//		// 自キャラの衝突時コールバックを呼び出す
+	//		player->OnCollision();
+	//		// 敵弾の衝突時コールバックを呼び出す
+	//		enemyBullet->OnCollision();
+	//	/*	enemyPopCommands.clear();
+	//		enemyPopCommands.seekg(0, std::ios::beg);*/
+	//	}
+	// }
 #pragma endregion
 
 #pragma region 自弾と敵キャラの当たり判定
@@ -386,6 +371,8 @@ void GameScene::CheckAllCollisions() {
 				bullet->OnCollision();
 				// 敵弾の衝突時コールバックを呼び出す
 				enemy2->OnCollision();
+	/*			enemy2PopCommands.clear();
+				enemy2PopCommands.seekg(0, std::ios::beg);*/
 			}
 		}
 	}
@@ -407,6 +394,8 @@ void GameScene::CheckAllCollisions() {
 				bullet->OnCollision();
 				// 敵弾の衝突時コールバックを呼び出す
 				enemy->OnCollision();
+		/*		enemyPopCommands.clear();
+				enemyPopCommands.seekg(0, std::ios::beg);*/
 			}
 		}
 	}
@@ -429,6 +418,8 @@ void GameScene::CheckAllCollisions() {
 				bullet->OnCollision();
 				// 敵弾の衝突時コールバックを呼び出す
 				enemyBullet->OnCollision();
+			/*	enemyPopCommands.clear();
+				enemyPopCommands.seekg(0, std::ios::beg);*/
 			}
 		}
 	}
@@ -451,6 +442,8 @@ void GameScene::CheckAllCollisions() {
 			player->OnCollision();
 			// 敵弾の衝突時コールバックを呼び出す
 			enemy->OnCollision();
+	/*		enemyPopCommands.clear();
+			enemyPopCommands.seekg(0, std::ios::beg);*/
 		}
 	}
 #pragma endregion
@@ -489,6 +482,12 @@ void GameScene::UpdateEnemyPopCommands() {
 		}
 		return;
 	}
+	if (deathFlag2) {
+		deathTime2_--;
+		if (deathTime2_ <= 0) {
+			scene_ = Scene::gameclear;
+		}
+	}
 
 	// 1行分の文字列を入れる変数
 	std::string line;
@@ -524,8 +523,17 @@ void GameScene::UpdateEnemyPopCommands() {
 			int32_t waitTime = atoi(word.c_str());
 			waitFlag = true;
 			waitTimer_ = waitTime;
-
 			break;
+		}
+		// DEATHコマンド
+		else if (word.find("DEATH") == 0) {
+			getline(line_stream, word, ',');
+			int32_t D2time = atoi(word.c_str());
+			deathFlag2 = true;
+			deathTime2_ = D2time;
+			ImGui::Begin("Dtimer");
+			ImGui::InputInt("Dtime", &D2time);
+			ImGui::End();
 		}
 	}
 }
@@ -611,25 +619,14 @@ void GameScene::UpdateEnemy2PopCommands() {
 			ImGui::InputInt("Dtime", &Dtime);
 			ImGui::End();
 		}
-		
 	}
 }
 
 void GameScene::PopInitialize() {
 	waitFlag = false;
 	waitTimer_ = 180;
-	if (scene_ == Scene::gameover || scene_==Scene::gameclear ) {
-		// ファイルを開く
-		std::ifstream file;
-		file.open("Resources/enemyPop.csv");
-		file.open("Resources/enemy2Pop.csv");
-		assert(file.is_open());
-		//元に戻す
-		if (enemyPopCommands << file.rdbuf() || enemy2PopCommands << file.rdbuf()) {
-			enemyPopCommands >> file.rdbuf();
-			enemy2PopCommands >> file.rdbuf();
-		}
-		// ファイル閉じる
-		file.close();
-	}
+	enemyPopCommands.clear();
+	enemyPopCommands.seekg(0, std::ios::beg);
+	enemy2PopCommands.clear();
+	enemy2PopCommands.seekg(0, std::ios::beg);
 }

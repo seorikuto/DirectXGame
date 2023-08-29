@@ -203,7 +203,7 @@ void Player::AAttack() {
 	
 
 	// 弾を生成し、初期化
-	if (input_->IsPressMouse(0)) {
+	if (input_->IsPressMouse(1)) {
 		// 弾の生成、初期化
 		PlayerBullet* newBullet = new PlayerBullet();
 		newBullet->Initialize(model_, GetWorldPosition(), velocity);
@@ -231,7 +231,7 @@ void Player::SAttack() {
 	velocity = TransformNormal(velocity, worldTransform_.matWorld_);
 
 	// 弾を生成し、初期化
-	if (input_->IsTriggerMouse(1)) {
+	if (input_->IsTriggerMouse(0)) {
 		// 弾の生成、初期化
 		PlayerBullet* newBullet = new PlayerBullet();
 		newBullet->Initialize(model_, GetWorldPosition(), velocity);

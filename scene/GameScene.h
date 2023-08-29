@@ -98,6 +98,8 @@ public: // メンバ関数
 	void PopInitialize();
 
 
+
+
 private: // メンバ変数
 	DirectXCommon* dxCommon = nullptr;
 	Input* input = nullptr;
@@ -150,8 +152,10 @@ private: // メンバ変数
 	int playTimer_ = 300;
 	//deathフラグ
 	bool deathFlag = false;
+	bool deathFlag2 = false;
 	//deathタイマー
 	int32_t deathTime_ = 300;
+	int32_t deathTime2_ = 300;
 
 	//scene
 	Scene scene_ = scene_;
@@ -163,9 +167,4 @@ private: // メンバ変数
 	Clear* clear_ = nullptr;
 	//over
 	Over* over_ = nullptr;
-
-	////// テクスチャハンドル
-	//uint32_t titleTexturHandle_ = 0;
-	////// スプライト
-	//Sprite* sprite_ = nullptr;
 };
