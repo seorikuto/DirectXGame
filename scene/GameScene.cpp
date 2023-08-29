@@ -195,6 +195,28 @@ void GameScene::Update() {
 		if (input->IsTriggerMouse(0)) {
 			scene_ = Scene::title;
 		}
+		enemies_.remove_if([](Enemy* enemy) {
+			if (enemy->IsEneDead() == 0) {
+				delete enemy;
+				return true;
+			}
+			return false;
+		});
+		enemies2_.remove_if([](Enemy2* enemy2) {
+			if (enemy2->IsEneDead() == 0) {
+				delete enemy2;
+				return true;
+			}
+			return false;
+		});
+		// デスフラグの立った弾を処理
+		enemyBullets_.remove_if([](EnemyBullet* enemyBullet) {
+			if (enemyBullet->IsEnemyDead() == 0) {
+				delete enemyBullet;
+				return true;
+			}
+			return false;
+		});
 		break;
 	case Scene::gameover:
 		over_->Update();
