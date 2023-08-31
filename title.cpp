@@ -6,24 +6,33 @@ Title::~Title() {
 }
 
 void Title::Initialize() {
-	//ハンドル読み込み
+	// ハンドル読み込み
 	titleTexturHandle_ = TextureManager::Load("title.png");
 	startHandle_ = TextureManager::Load("start.png");
-	//スプライト生成
+	startHandle2_ = TextureManager::Load("start2.png");
+	// スプライト生成
 	sprite_ = Sprite::Create(titleTexturHandle_, {0, 0});
-	spriteStart_ = Sprite::Create(startHandle_, {450, 400});
+	spriteStart_ = Sprite::Create(startHandle_, {400, 400});
+	spriteStart2_ = Sprite::Create(startHandle2_, {400, 400});
 	// レティクル用テクスチャ取得
 	uint32_t textureReticle = TextureManager::Load("target.png");
 	// スプライト生成
 	sprite2DReticle_ = Sprite::Create(textureReticle, {640, 360}, {1, 1, 1, 1}, {0.5f, 0.5f});
-	
+
+	audio_ = Audio::GetInstance();
+	//サウンドデータ読み込み
+	soundDataHandle_ = audio_->LoadWave("title.wav");
+	//音声再生
+	audio_->PlayWave(soundDataHandle_);
+	voiceHandle_ = audio_->PlayWave(soundDataHandle_, true);
 }
 
 void Title::Update() {
 	Mouse();
 	Collision();
-	ImGui::Begin("title");
-	ImGui::End();
+	if (startFlag_) {
+		audio_->StopWave(voiceHandle_);
+	}
 }
 
 void Title::Draw() { 
@@ -57,8 +66,14 @@ void Title::Collision() {
 	    sprite2DReticle_->GetPosition().x <= spriteStart_->GetPosition().x + 400 &&
 	    sprite2DReticle_->GetPosition().y <= spriteStart_->GetPosition().y + 200 ) {
 		startFlag_ = true;
-	} else {
+	}else {
 		startFlag_ = false;
+	}
+}
+
+void Title::Collision2() { 
+	if (startFlag_) {
+		spriteStart2_->Draw();
 	}
 }
 

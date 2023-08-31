@@ -339,3 +339,5 @@ void Player::Mouse(ViewProjection& viewProjection) {
 	    worldTransform3DReticle_.translation_.y, worldTransform3DReticle_.translation_.z);
 	ImGui::End();
 }
+
+void Player::SetPlayerDead(bool isPlayerDead) { isPlayerDead_ = isPlayerDead; }

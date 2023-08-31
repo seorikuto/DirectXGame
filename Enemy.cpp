@@ -1,34 +1,36 @@
 #include "Enemy.h"
-#include "GameScene.h"
 #include "ImGuiManager.h"
 #include "player.h"
+#include "GameScene.h"
 #include <cassert>
 
 void Enemy::Initialize(Model* model, const Vector3& position) {
 	assert(model);
 	model_ = model;
 	worldTransform_.Initialize();
-	// worldTransform2_.Initialize();
 	textureHandleEnemy_ = TextureManager::Load("Enemy.png");
-	textureHandleEnemy2_ = TextureManager::Load("Enemy2.png");
 	// 初期座標
 	worldTransform_.translation_ = position;
-	// worldTransform2_.translation_ = position;
 
 	// 接近フェーズ初期化
 	InitializePhase();
 }
 
 void Enemy::Update() {
-	/*switch (phase_) {
-	case Phase::EneAttack:
-	default:
-	    EneAttack();
+	switch (phase_) {
+	case Phase::FirstPhase:
+		FirstPhase();
 	    break;
-	case Phase::EneFire:
-	    ApproachUpdate();
+	case Phase::SecondPhase:
+	    SecondPhase();
 	    break;
-	}*/
+	case Phase::ThirdPhase:
+		ThirdPhase();
+		break;
+	case Phase::FourthPhase:
+		FourthPhase();
+		break;
+	}
 	// 移動（ベクトル加算）
 	if (--enemyTimer_ <= 0) {
 		worldTransform_.translation_.z -= 0.05f;
@@ -44,7 +46,6 @@ void Enemy::Update() {
 		fireTimer = kFireInterval;
 	}
 	worldTransform_.UpdateMatrix();
-	// worldTransform2_.UpdateMatrix();
 
 	ImGui::Begin("enemy");
 	ImGui::InputInt("firetimer", &fireTimer);
@@ -60,11 +61,6 @@ void Enemy::Update() {
 void Enemy::Draw(ViewProjection& viewProjection) {
 	model_->Draw(worldTransform_, viewProjection, textureHandleEnemy_);
 }
-
-// void Enemy::Draw2(ViewProjection& viewProjection) {
-//	//model_->Draw(worldTransform2_, viewProjection, textureHandleEnemy2_);
-//	model_->Draw(worldTransform2_, viewProjection, textureHandleEnemy2_);
-// }
 
 void Enemy::Fire() {
 	assert(player_);
@@ -118,38 +114,62 @@ void Enemy::InitializePhase() {
 	// 発射タイマーを初期化
 	fireTimer = kFireInterval;
 }
-//
-// void Enemy::EneAttack() {
-//	worldTransform2_.translation_.z -= speed_;
-//	if (worldTransform2_.translation_.z < 0) {
-//		speed_ -= 2.0f;
-//	}
-//	if (worldTransform2_.translation_.z > 90) {
-//		speed_ += 2.0f;
-//	}
-//	if (isEneDead_ == true) {
-//		phase_ = Phase::EneFire;
-//	}
-//
-//
-//}
-//
-// void Enemy::ApproachUpdate() {
-//	 //   // 移動（ベクトル加算）
-//	 //  if (--enemyTimer_ <= 0) {
-//		// worldTransform_.translation_.z -= 0.05f;
-//	 //   }
-//
-//		//// 発射タイマーカウントダウン
-//	 //   fireTimer--;
-//	 //   // 指定時間に達した
-//	 //   if (fireTimer <= 0) {
-//	 //   //弾発射
-//	 //   Fire();
-//	 //   // 発射タイマーを初期化
-//	 //   fireTimer = kFireInterval;
-//	 //   }
-//}
+
+ void Enemy::FirstPhase() {
+	worldTransform_.translation_.z -= speed_;
+	if (worldTransform_.translation_.z < 0) {
+		speed_ -= 2.0f;
+	}
+	if (worldTransform_.translation_.z > 50) {
+		phase_ = Phase::SecondPhase;
+	}
+}
+
+ void Enemy::SecondPhase() { 
+	 speed_ = 0.5f;
+	 worldTransform_.translation_.z -= speed_;
+	if (worldTransform_.translation_.z < 5 && worldTransform_.translation_.x > 0 ) {
+		worldTransform_.translation_.y -= speed_;
+		worldTransform_.translation_.x += speed_;
+	}
+	if (worldTransform_.translation_.z < 5 && worldTransform_.translation_.x < 0) {
+		worldTransform_.translation_.y -= speed_;
+		worldTransform_.translation_.x -= speed_;
+	}
+	if (worldTransform_.translation_.x > 15 && worldTransform_.translation_.y < -15 ||
+	    worldTransform_.translation_.x > -15 && worldTransform_.translation_.y < -15 ) {
+		phase_ = Phase::ThirdPhase;
+	}
+ }
+
+ void Enemy::ThirdPhase() { 
+	worldTransform_.translation_.z = 30.0f;
+	worldTransform_.translation_.y += speed_;
+	if (worldTransform_.translation_.y > 20.0f) {
+		speed_ = 0.0f;
+		if (worldTransform_.translation_.x > 10) {
+			worldTransform_.translation_.x -= 1.0f;
+			phase_ = Phase::FourthPhase;
+		}
+		if (worldTransform_.translation_.x < -10) {
+			worldTransform_.translation_.x += 1.0f;
+		}
+	}
+	if (worldTransform_.translation_.x == 10 || worldTransform_.translation_.x == -10) {
+		speed_ = -1.0f;
+		phase_ = Phase::FourthPhase;
+	}
+ }
+
+ void Enemy::FourthPhase() {
+	worldTransform_.translation_.z += speed_;
+	if (worldTransform_.translation_.z < 10) {
+		speed_ += 2.0f;
+	}
+	if (worldTransform_.translation_.z > 50) {
+		speed_ -= 2.0f;
+	}
+ }
 
 void Enemy::OnCollision() { isEneDead_ = true; }
 
@@ -162,3 +182,5 @@ Vector3 Enemy::GetWorldPosition() {
 	worldPos.z = worldTransform_.translation_.z;
 	return worldPos;
 }
+
+

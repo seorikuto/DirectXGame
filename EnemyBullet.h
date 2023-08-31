@@ -25,7 +25,7 @@ private:
 	Vector3 velocity_;
 
 	// 弾寿命
-	static const int kEnemyLifeTimer = 60 * 1;
+	static const int kEnemyLifeTimer = 60 * 5;
 	//デスタイマー
 	int32_t enemyDeathTimer_ = kEnemyLifeTimer;
 	//フラグ

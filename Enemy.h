@@ -4,6 +4,8 @@
 #include "EnemyBullet.h"
 #include "Matrix4x4.h"
 #include <list>
+#include <stdio.h>
+#include <time.h>
 
 //自機クラスの前方宣言
 class Player;
@@ -15,11 +17,13 @@ class GameScene;
 ///敵
 ///</summary>
 class Enemy {
-	////敵パターン
-	//enum class Phase {
-	//	EneAttack,	//敵
-	//	EneFire,	//2種類目
-	//};
+	//敵パターン
+	enum class Phase {
+		FirstPhase,		//1段階
+		SecondPhase,	//2段階
+		ThirdPhase,		//3段階
+		FourthPhase,	//4段階
+	};
 
 public:
 	void Initialize(Model* model, const Vector3& position);
@@ -28,13 +32,17 @@ public:
 	
 	void Fire();
 	~Enemy();
-	////敵1
-	//void EneAttack();
-	////接近フェーズ更新関数
-	//void ApproachUpdate();
+	//1段階
+	void FirstPhase();
+	//2段階
+	void SecondPhase();
+	//3段階
+	void ThirdPhase();
+	//4段階
+	void FourthPhase();
 
 	//発射間隔
-	static const int kFireInterval = 60;
+	static const int kFireInterval = 30;
 	//接近フェーズ初期化
 	void InitializePhase();
 
@@ -57,18 +65,15 @@ public:
 
 private:
 	WorldTransform worldTransform_;
-	WorldTransform worldTransform2_;
 	Model* model_ = nullptr;
-
 	uint32_t textureHandleEnemy_ = 0u;
-	uint32_t textureHandleEnemy2_ = 0u;
 
-	// 出現<frm>
-	static const int32_t kRespornTime = 60 * 5;
-	// 敵出現タイマー
+	//// 出現<frm>
+	static const int32_t kRespornTime = 60 * 3;
+	//// 敵出現タイマー
 	int32_t enemyTimer_ = kRespornTime;
 	//フェーズ
-	//Phase phase_ = phase_;
+	Phase phase_ = phase_;
 
 	//発射タイマー
 	int fireTimer = 0;
@@ -84,5 +89,4 @@ private:
 	
 	//キャラスピード
 	float speed_ = 2.0f;
-
 };

@@ -156,7 +156,9 @@ private: // メンバ変数
 	//deathタイマー
 	int32_t deathTime_ = 300;
 	int32_t deathTime2_ = 300;
-
+	
+	
+	
 	//scene
 	Scene scene_ = scene_;
 	//title
@@ -167,4 +169,10 @@ private: // メンバ変数
 	Clear* clear_ = nullptr;
 	//over
 	Over* over_ = nullptr;
+
+
+	// サウンドデータハンドル
+	uint32_t soundDataHandle_ = 0;
+	uint32_t voiceHandle_ = 0;
+
 };

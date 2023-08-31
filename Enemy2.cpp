@@ -11,9 +11,7 @@ void Enemy2::Initialize(Model* model, const Vector3& position) {
 	textureHandleEnemy2_ = TextureManager::Load("Enemy2.png");
 	// 初期座標
 	worldTransform_.translation_ = position;
-
-	// 接近フェーズ初期化
-	// InitializePhase();
+	worldTransform_.scale_.z = 0.1f;
 }
 
 void Enemy2::Update() {
@@ -42,45 +40,9 @@ void Enemy2::Draw(ViewProjection& viewProjection) {
 }
 
 Enemy2::~Enemy2() {
-	//	    //// 敵bulletの開放
-	//	    //for (EnemyBullet* enemyBullet : enemyBullets_) {
-	//		   // delete enemyBullet;
-	//	    //}
-}
-
-void Enemy2::DeathMotion() { 
-		worldTransform_.scale_.x -= 0.2f;
-		worldTransform_.scale_.y -= 0.2f;
-		worldTransform_.scale_.z -= 0.2f;
-	if (worldTransform_.scale_.x < 0 &&
-		worldTransform_.scale_.y < 0 &&
-	    worldTransform_.scale_.z < 0 ) {
-		worldTransform_.scale_.x = 0.1f;
-		worldTransform_.scale_.y = 0.1f;
-		worldTransform_.scale_.z = 0.1f;
-	}
 
 }
 
-// void Enemy2::InitializePhase() {
-//	// 発射タイマーを初期化
-//	fireTimer = kFireInterval;
-// }
-//
-//  void Enemy::EneAttack() {
-//	worldTransform2_.translation_.z -= speed_;
-//	if (worldTransform2_.translation_.z < 0) {
-//		speed_ -= 2.0f;
-//	}
-//	if (worldTransform2_.translation_.z > 90) {
-//		speed_ += 2.0f;
-//	}
-//	if (isEneDead_ == true) {
-//		phase_ = Phase::EneFire;
-//	}
-//
-//
-// }
 
 void Enemy2::OnCollision() { isEneDead_ = true; }
 

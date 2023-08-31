@@ -45,6 +45,8 @@ public:
 
 	bool IsPlayerDead() const { return isPlayerDead_; }
 
+	void SetPlayerDead(bool isPlayerDead);
+
 private:
 	WorldTransform worldTransform_;
 
