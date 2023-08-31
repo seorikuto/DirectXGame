@@ -50,7 +50,7 @@ void GameScene::Initialize() {
 	over_ = new Over();
 	Vector3 playerPosition{0, 0, 0};
 	// 自キャラの初期化
-	textureHandle = TextureManager::Load("sample.png");
+	textureHandle = TextureManager::Load("Player.png");
 
 	// 敵キャラの生成
 	// enemy = new Enemy();
@@ -95,17 +95,17 @@ void GameScene::Initialize() {
 	player->Initialize(model, textureHandle, playerPosition);
 	player->SetParent(&railCamera_->GetWorldTransform());
 	// 軸方向表示の表示を有効にする
-	AxisIndicator::GetInstance()->SetVisible(1);
-	// 軸方向表示が参照するビュープロジェクションを指定する（アドレス渡し）
-	AxisIndicator::GetInstance()->SetTargetViewProjection(&viewProjection_);
+	//AxisIndicator::GetInstance()->SetVisible(1);
+	//// 軸方向表示が参照するビュープロジェクションを指定する（アドレス渡し）
+	//AxisIndicator::GetInstance()->SetTargetViewProjection(&viewProjection_);
 	// デバッグカメラの生成
 	debugCamera_ = new DebugCamera(1280, 720);
 
 	//サウンドデータ読み込み
 	soundDataHandle_ = audio->LoadWave("play.wav");
 	// 音声再生
-	audio->PlayWave(soundDataHandle_);
-	voiceHandle_ = audio->PlayWave(soundDataHandle_, true);
+	audio->PlayWave(soundDataHandle_,1,0.5);
+	voiceHandle_ = audio->PlayWave(soundDataHandle_, 1,0);
 
 	LoadEnemyPopData();
 	LoadEnemy2PopData();
@@ -123,6 +123,7 @@ void GameScene::Update() {
 		AddEnemy2(worldTransform_.translation_);
 		
 		// 敵処理
+		
 		enemies2_.clear();
 		enemies_.clear();
 		enemyBullets_.clear();
@@ -200,6 +201,7 @@ void GameScene::Update() {
 		break;
 	case Scene::gameover:
 		over_->Update();
+		
 		//敵処理
 		enemies_.remove_if([](Enemy* enemy) {
 			if (enemy->IsEneDead() == 0) {
@@ -254,10 +256,6 @@ void GameScene::Update() {
 	} else {
 		viewProjection_.UpdateMatrix();
 	}
-
-	ImGui::Begin("waitTimer");
-	ImGui::InputInt("waitTimer", &waitTimer_);
-	ImGui::End();
 }
 
 void GameScene::Draw() {
@@ -409,7 +407,7 @@ void GameScene::CheckAllCollisions() {
 #pragma endregion
 
 #pragma region 自弾と敵弾の当たり判定
-	// 自弾と敵弾全ての当たり判定
+	 //自弾と敵弾全ての当たり判定
 	for (PlayerBullet* bullet : bullets) {
 		for (EnemyBullet* enemyBullet : enemyBullets) {
 			posA = bullet->GetWorldPosition();
@@ -447,6 +445,25 @@ void GameScene::CheckAllCollisions() {
 			player->OnCollision();
 			// 敵弾の衝突時コールバックを呼び出す
 			enemy->OnCollision();
+		}
+	}
+#pragma endregion
+#pragma region 自機と敵の当たり判定
+	// 自キャラの座標
+	posA = player->GetWorldPosition();
+	for (Enemy2* enemy2 : enemies2_) {
+		posB = enemy2->GetWorldPosition();
+		float r1 = 1.0f;
+		float r2 = 1.0f;
+		float distancae = (r1 + r2) * (r1 + r2);
+		//  球と球の交差判定
+		if (distancae > (posB.x - posA.x) * (posB.x - posA.x) +
+		                    (posB.y - posA.y) * (posB.y - posA.y) +
+		                    (posB.z - posA.z) * (posB.z - posA.z)) {
+			// 自機の衝突時コールバックを呼び出す
+			player->OnCollision();
+			// 敵弾の衝突時コールバックを呼び出す
+			enemy2->OnCollision();
 		}
 	}
 #pragma endregion
@@ -534,9 +551,6 @@ void GameScene::UpdateEnemyPopCommands() {
 			int32_t D2time = atoi(word.c_str());
 			deathFlag2 = true;
 			deathTime2_ = D2time;
-			ImGui::Begin("Dtimer");
-			ImGui::InputInt("Dtime", &D2time);
-			ImGui::End();
 		}
 	}
 }
@@ -618,9 +632,7 @@ void GameScene::UpdateEnemy2PopCommands() {
 			int32_t Dtime = atoi(word.c_str());
 			deathFlag = true;
 			deathTime_ = Dtime;
-			ImGui::Begin("Dtimer");
-			ImGui::InputInt("Dtime", &Dtime);
-			ImGui::End();
+
 		}
 	}
 }
@@ -632,6 +644,8 @@ void GameScene::PopInitialize() {
 	waitTimer_ = 180;
 	deathTime_ = 300;
 	deathTime2_ = 300;
+	player->Initialize(model, textureHandle, worldTransform_.translation_);
+	player->BulletInitialize();
 	player->SetPlayerDead(false);
 	enemyPopCommands.clear();
 	enemyPopCommands.seekg(0, std::ios::beg);

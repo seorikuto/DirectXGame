@@ -15,8 +15,7 @@ void Over::Initialize() {
 }
 
 void Over::Update() {
-	ImGui::Begin("GameOver");
-	ImGui::End();
+
 }
 
 void Over::Draw() { 

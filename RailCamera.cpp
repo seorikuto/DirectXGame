@@ -42,19 +42,5 @@ void RailCamera::Update() {
 
 
 
-
-
-	
-
-
-	//カメラの座標を画面表示する
-	ImGui::Begin("Camera");
-	ImGui::SliderFloat("WorldTranslation", &worldTransform_.translation_.x, -100, 100);
-	ImGui::SliderFloat("WorldTranslation", &worldTransform_.translation_.y, -30, 30);
-	ImGui::SliderFloat("WorldTranslation", &worldTransform_.translation_.z, -50, 50);
-	ImGui::SliderFloat("WorldRotation", &worldTransform_.rotation_.x, -20, 20);
-	ImGui::SliderFloat("WorldRotation", &worldTransform_.rotation_.y, -20, 20);
-	ImGui::SliderFloat("WorldRotation", &worldTransform_.rotation_.z, -20, 20);	
-	ImGui::End();
 }
 

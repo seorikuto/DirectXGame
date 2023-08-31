@@ -47,6 +47,8 @@ public:
 
 	void SetPlayerDead(bool isPlayerDead);
 
+	void BulletInitialize();
+
 private:
 	WorldTransform worldTransform_;
 

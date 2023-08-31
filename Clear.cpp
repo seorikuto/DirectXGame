@@ -15,8 +15,7 @@ void Clear::Initialize() {
 }
 
 void Clear::Update() {
-	ImGui::Begin("title");
-	ImGui::End();
+
 }
 
 void Clear::Draw() { 

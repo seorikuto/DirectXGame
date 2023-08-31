@@ -19,20 +19,20 @@ void Title::Initialize() {
 	// スプライト生成
 	sprite2DReticle_ = Sprite::Create(textureReticle, {640, 360}, {1, 1, 1, 1}, {0.5f, 0.5f});
 
-	audio_ = Audio::GetInstance();
-	//サウンドデータ読み込み
-	soundDataHandle_ = audio_->LoadWave("title.wav");
-	//音声再生
-	audio_->PlayWave(soundDataHandle_);
-	voiceHandle_ = audio_->PlayWave(soundDataHandle_, true);
+	//audio_ = Audio::GetInstance();
+	////サウンドデータ読み込み
+	//soundDataHandle_ = audio_->LoadWave("title.wav");
+	////音声再生
+	//audio_->PlayWave(soundDataHandle_);
+	//voiceHandle_ = audio_->PlayWave(soundDataHandle_, true);
 }
 
 void Title::Update() {
 	Mouse();
 	Collision();
-	if (startFlag_) {
-		audio_->StopWave(voiceHandle_);
-	}
+	//if (startFlag_) {
+	//	audio_->StopWave(voiceHandle_);
+	//}
 }
 
 void Title::Draw() { 
@@ -52,12 +52,6 @@ void Title::Mouse() {
 	spritePosition.x = (float)mousePosition.x;
 	spritePosition.y = (float)mousePosition.y;
 	sprite2DReticle_->SetPosition(Vector2(spritePosition.x, spritePosition.y));
-	ImGui::Begin("mouse");
-	ImGui::Text("X%f, Y%f", spritePosition.x, spritePosition.y);
-	ImGui::End();
-	ImGui::Begin("startFlag");
-	ImGui::Text("startFlag%s", &startFlag_);
-	ImGui::End();
 }
 
 void Title::Collision() {

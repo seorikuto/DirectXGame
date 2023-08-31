@@ -24,15 +24,7 @@ void Enemy2::Update() {
 	}
 	worldTransform_.UpdateMatrix();
 
-	ImGui::Begin("enemy2");
-	ImGui::InputInt("firetimer", &fireTimer);
-	ImGui::InputInt("enemytimer", &enemyTimer_);
-	ImGui::SliderFloat("enemyX", &worldTransform_.translation_.x, -80, 80);
-	ImGui::SliderFloat("enemyY", &worldTransform_.translation_.y, -30, 30);
-	ImGui::SliderFloat("enemyZ", &worldTransform_.translation_.z, -80, 80);
-	ImGui::End();
-	ImGui::Begin("play");
-	ImGui::End();
+	
 }
 
 void Enemy2::Draw(ViewProjection& viewProjection) {

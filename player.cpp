@@ -13,6 +13,9 @@ void Player::Initialize(Model* model, uint32_t textureHandle, const Vector3& tra
 	textureHandle_ = textureHandle;
 	input_ = Input::GetInstance();
 	worldTransform_.translation_ = trans;
+	worldTransform_.scale_.x = 1.0f;
+	worldTransform_.scale_.y = 2.0f;
+	worldTransform_.scale_.z = 0.5f;
 
 	//3Dレティクルのワールドトランスフォーム初期化
 	worldTransform3DReticle_.Initialize();
@@ -135,30 +138,7 @@ void Player::Update(ViewProjection& viewProjection) {
 
 	}
 
-	//ゲームパッドの状態を得る変数（XINPUT）
-	XINPUT_STATE joyState;
-	//ゲームパッドの取得状態
-	if (Input::GetInstance()->GetJoystickState(0, joyState)) {
-		worldTransform_.translation_.x += (float)joyState.Gamepad.sThumbLX / SHRT_MAX * kCharacterSpeed;
-		worldTransform_.translation_.y += (float)joyState.Gamepad.sThumbLY / SHRT_MAX * kCharacterSpeed;
-	}
-	//スプライトの現在座標を取得
-	Vector2 spritePosition = sprite2DReticle_->GetPosition();
-	
-	//ジョイスティック状態取得
-	if (Input::GetInstance()->GetJoystickState(0, joyState)) {
-		spritePosition.x += (float)joyState.Gamepad.sThumbRX / SHRT_MAX * 5.0f;
-		spritePosition.y -= (float)joyState.Gamepad.sThumbRY / SHRT_MAX * 5.0f;
-		//スプライトの座標変更を反映
-		sprite2DReticle_->SetPosition(spritePosition);
-	}
 
-
-	ImGui::Begin("player");
-	ImGui::SliderFloat("playerX", &worldTransform_.translation_.x, -35.0f, 35.0f);
-	ImGui::SliderFloat("playerY", &worldTransform_.translation_.y, -18.0f, 18.0f);
-	ImGui::SliderFloat("playerZ", &worldTransform_.translation_.z, -20.0f, 20.0f);
-	ImGui::End();
 }
 
 void Player::Rotate() {
@@ -176,7 +156,7 @@ void Player::Rotate() {
 void Player::Draw(ViewProjection& viewProjection) {
 	model_->Draw(worldTransform_, viewProjection, textureHandle_);
 	// 3Dレティクル表示
-	model_->Draw(worldTransform3DReticle_, viewProjection);
+	//model_->Draw(worldTransform3DReticle_, viewProjection);
 	//弾描画
 	for (PlayerBullet* bullet : bullets_) {
 		bullet->Draw(viewProjection);
@@ -185,32 +165,32 @@ void Player::Draw(ViewProjection& viewProjection) {
 }
 
 void Player::AAttack() {
-	// 弾の速度
-	const float kBulletSpeed = 1.0f;
-	Vector3 velocity(0, 0, kBulletSpeed);
-	// 速度ベクトルを自機の向きに合わせて回転
+	//// 弾の速度
+	//const float kBulletSpeed = 1.0f;
+	//Vector3 velocity(0, 0, kBulletSpeed);
+	//// 速度ベクトルを自機の向きに合わせて回転
 
-	velocity = {
-		worldTransform3DReticle_.translation_.x - worldTransform_.translation_.x,
-	    worldTransform3DReticle_.translation_.y - worldTransform_.translation_.y,
-	    worldTransform3DReticle_.translation_.z - worldTransform_.translation_.z,
-	};
-	velocity = {
-	    kBulletSpeed * Normalize(velocity).x, kBulletSpeed * Normalize(velocity).y,
-	    kBulletSpeed * Normalize(velocity).z};
+	//velocity = {
+	//	worldTransform3DReticle_.translation_.x - worldTransform_.translation_.x,
+	//    worldTransform3DReticle_.translation_.y - worldTransform_.translation_.y,
+	//    worldTransform3DReticle_.translation_.z - worldTransform_.translation_.z,
+	//};
+	//velocity = {
+	//    kBulletSpeed * Normalize(velocity).x, kBulletSpeed * Normalize(velocity).y,
+	//    kBulletSpeed * Normalize(velocity).z};
 
-		velocity = TransformNormal(velocity, worldTransform_.matWorld_);
-	
+	//	velocity = TransformNormal(velocity, worldTransform_.matWorld_);
+	//
 
-	// 弾を生成し、初期化
-	if (input_->IsPressMouse(1)) {
-		// 弾の生成、初期化
-		PlayerBullet* newBullet = new PlayerBullet();
-		newBullet->Initialize(model_, GetWorldPosition(), velocity);
+	//// 弾を生成し、初期化
+	//if (input_->IsPressMouse(1)) {
+	//	// 弾の生成、初期化
+	//	PlayerBullet* newBullet = new PlayerBullet();
+	//	newBullet->Initialize(model_, GetWorldPosition(), velocity);
 
-		// 弾を登録する
-		bullets_.push_back(newBullet);
-	}
+	//	// 弾を登録する
+	//	bullets_.push_back(newBullet);
+	//}
 }
 
 void Player::SAttack() {
@@ -330,14 +310,17 @@ void Player::Mouse(ViewProjection& viewProjection) {
 	worldTransform3DReticle_.TransferMatrix();
 
 	
-	ImGui::Begin("playerMouse");
-	ImGui::Text("2DReticle:(%f,%f)", spritePosition.x,spritePosition.y);
-	ImGui::Text("Near:(%+.2f,%+.2f,%+.2f)", posNear.x, posNear.y, posNear.z);
-	ImGui::Text("Far:(%+.2f,%+.2f,%+.2f)", posFar.x, posFar.y, posFar.z);
-	ImGui::Text(
-	    "3DReticle:(%+.2f,%+.2f,%+.2f)", worldTransform3DReticle_.translation_.x,
-	    worldTransform3DReticle_.translation_.y, worldTransform3DReticle_.translation_.z);
-	ImGui::End();
+
 }
 
 void Player::SetPlayerDead(bool isPlayerDead) { isPlayerDead_ = isPlayerDead; }
+
+void Player::BulletInitialize() {
+	bullets_.remove_if([](PlayerBullet* bullet) {
+		if (bullet->IsDead() == 0) {
+			delete bullet;
+			return true;
+		}
+		return false;
+	});
+}
